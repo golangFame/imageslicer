@@ -2,7 +2,6 @@ package imageslicer
 
 import (
 	"image"
-	"math"
 )
 
 type Grid struct {
@@ -16,11 +15,8 @@ func Slice(img image.Image, grid [2]int) (tiles []image.Image) {
 
 	shape := img.Bounds()
 
-	heightF := float64(shape.Max.Y / grid[0])
-	widthF := float64(shape.Max.X / grid[1])
-
-	height := int(math.Ceil(heightF))
-	width := int(math.Ceil(widthF))
+	height := shape.Max.Y / grid[0]
+	width := shape.Max.X / grid[1]
 
 	for y := shape.Min.Y; y+height <= shape.Max.Y; y += height {
 
