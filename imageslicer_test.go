@@ -23,12 +23,11 @@ func TestSlice(t *testing.T) {
 	}
 
 	grids := [][2]uint{
-		//{1, 1},
-		//{1, 2},
-		//{1, 10},
-		//{2, 0},
+		{1, 1},
+		{1, 2},
+		{1, 10},
+		{2, 0},
 		{2, 1},
-		{3, 0},
 		{3, 1},
 		{3, 2},
 		{3, 3},
@@ -47,7 +46,7 @@ func TestSlice(t *testing.T) {
 		if len(tiles) != int(expectedNoOfTiles) {
 			t.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
 		} else {
-			t.Logf("%v passed", grid)
+			t.Logf("%v split passed", grid)
 		}
 
 		joinedImg, err := imageslicer.Join(tiles, grid)

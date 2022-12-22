@@ -43,7 +43,7 @@ func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 
 	expectedNoOfTiles := int(grid[0] * grid[1])
 
-	if len(tiles) != expectedNoOfTiles {
+	if len(tiles) != expectedNoOfTiles || expectedNoOfTiles == 0 {
 		err = fmt.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
 		return
 	}
