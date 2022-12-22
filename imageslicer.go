@@ -1,9 +1,12 @@
 package imageslicer
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"image"
 	"image/draw"
+	"image/jpeg"
 )
 
 type Grid struct {
@@ -39,7 +42,7 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 	return
 }
 
-func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
+func Join(tiles []image.Image, grid [2]uint, c *websocket.Conn) (img image.Image, err error) {
 
 	expectedNoOfTiles := int(grid[0] * grid[1])
 
@@ -59,20 +62,35 @@ func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 
 	srcImage := image.NewRGBA(shapeOrig)
 
-	for y := 0; y < int(grid[0]); y++ {
+	for x := 0; x < int(grid[0]); x++ {
+		for y := 0; y < int(grid[1]); y++ {
 
-		for x := 0; x < int(grid[1]); x++ {
+			fmt.Println(shape.Max.X*x, shape.Max.Y*y)
 
 			tile := tiles[i]
 
 			draw.Draw(srcImage, tile.Bounds(), tile, image.Point{
-				x * shape.Min.X,
-				y * shape.Min.Y,
-			}, draw.Src)
+				shape.Max.X * x,
+				shape.Max.Y * y,
+			}, draw.Over)
 
+			c.WriteMessage(websocket.BinaryMessage, getBytes(srcImage))
+			i += 1
 		}
 
 	}
 	img = srcImage
+	return
+}
+
+func getBytes(i image.Image) (b []byte) {
+	var outWriter bytes.Buffer
+
+	err := jpeg.Encode(&outWriter, i, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	b = outWriter.Bytes()
+
 	return
 }

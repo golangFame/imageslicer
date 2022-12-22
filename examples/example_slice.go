@@ -43,7 +43,7 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 	c.WriteMessage(websocket.TextMessage, []byte("lets start"))
 
 	for {
-		c.WriteMessage(websocket.TextMessage, []byte("sent the image url"))
+		c.WriteMessage(websocket.TextMessage, []byte("send the image url"))
 
 		mt, msg, err := c.ReadMessage()
 
@@ -62,13 +62,13 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 			c.WriteMessage(websocket.CloseMessage, []byte("unable to decode the given image"))
 			return
 		}
-		grid := [2]uint{4, 4}
+		grid := [2]uint{2, 2}
 		tiles := imageslicer.Slice(inputImage, grid)
 
-		for _, tile := range tiles {
+		/*	for _, tile := range tiles {
 			c.WriteMessage(websocket.BinaryMessage, getBytes(tile))
-		}
-		outImage, err := imageslicer.Join(tiles, grid)
+		}*/
+		outImage, err := imageslicer.Join(tiles, grid, c)
 
 		if err != nil {
 			c.WriteMessage(websocket.CloseMessage, []byte(err.Error()))
