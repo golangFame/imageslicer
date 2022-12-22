@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/goferHiro/imageslicer"
 	"github.com/gorilla/websocket"
@@ -46,13 +47,32 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 		c.WriteMessage(websocket.TextMessage, []byte("send the image url"))
 
 		mt, msg, err := c.ReadMessage()
+		grid := [2]uint{4, 4}
 
-		if mt != websocket.TextMessage {
-			c.WriteMessage(websocket.TextMessage, []byte("invalid msg"))
-			continue
+		var imageUrl string
+
+		var jsonMsg struct {
+			Url  string  `json:"url"`
+			Grid [2]uint `json:"grid"`
 		}
 
-		imageUrl := string(msg)
+		switch mt {
+		case websocket.TextMessage:
+			//imageUrl = string(msg)
+			err := json.Unmarshal(msg, &jsonMsg)
+			if err != nil {
+				c.WriteMessage(websocket.TextMessage, []byte("prefer json msgs"))
+				imageUrl = string(msg)
+			} else {
+				imageUrl = jsonMsg.Url
+				grid = jsonMsg.Grid
+			}
+
+		default:
+			c.WriteMessage(websocket.TextMessage, []byte("invalid msg"))
+			continue
+
+		}
 
 		inputImage := getImageFromUrl(imageUrl)
 
@@ -62,7 +82,6 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 			c.WriteMessage(websocket.CloseMessage, []byte("unable to decode the given image"))
 			return
 		}
-		grid := [2]uint{4, 4}
 		tiles := imageslicer.Slice(inputImage, grid)
 
 		for _, tile := range tiles {
