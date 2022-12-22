@@ -1,3 +1,3 @@
-module github.com/goferHiro/image-slicer
+module github.com/goferHiro/imageslicer
 
 go 1.19
