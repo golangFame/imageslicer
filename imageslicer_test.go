@@ -22,14 +22,33 @@ func TestSlice(t *testing.T) {
 		t.Fatalf("%s unable to decode the img", t.Name())
 	}
 
-	grid := [2]int{2, 2}
+	grids := [][2]uint{
+		{1, 1},
+		{1, 2},
+		{1, 10},
+		{2, 0},
+		{2, 1},
+		{3, 0},
+		{3, 1},
+		{3, 2},
+		{3, 3},
+		{3, 6},
+		{5, 6},
+		{7, 20},
+		{10, 10},
+		{10, 20},
+	}
 
-	tiles := imageslicer.Slice(img, grid)
+	for _, grid := range grids {
+		tiles := imageslicer.Slice(img, grid)
 
-	expectedNoOfTiles := grid[0] * grid[1]
+		expectedNoOfTiles := grid[0] * grid[1]
 
-	if len(tiles) != expectedNoOfTiles {
-		t.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
+		if len(tiles) != int(expectedNoOfTiles) {
+			t.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
+		} else {
+			t.Logf("%v passed", grid)
+		}
 	}
 
 }

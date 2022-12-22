@@ -9,14 +9,18 @@ type Grid struct {
 	Columns int
 }
 
-func Slice(img image.Image, grid [2]int) (tiles []image.Image) {
+func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 
 	tiles = make([]image.Image, 0, grid[0]*grid[1])
 
+	if cap(tiles) == 0 {
+		return
+	}
+
 	shape := img.Bounds()
 
-	height := shape.Max.Y / grid[0]
-	width := shape.Max.X / grid[1]
+	height := shape.Max.Y / int(grid[0])
+	width := shape.Max.X / int(grid[1])
 
 	for y := shape.Min.Y; y+height <= shape.Max.Y; y += height {
 
