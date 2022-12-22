@@ -1,7 +1,9 @@
 package imageslicer
 
 import (
+	"fmt"
 	"image"
+	"image/draw"
 )
 
 type Grid struct {
@@ -34,5 +36,43 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 		}
 	}
 
+	return
+}
+
+func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
+
+	expectedNoOfTiles := int(grid[0] * grid[1])
+
+	if len(tiles) != expectedNoOfTiles {
+		err = fmt.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
+		return
+	}
+
+	i := 0
+
+	shape := tiles[0].Bounds()
+
+	height := shape.Max.Y * int(grid[0])
+	width := shape.Max.X * int(grid[1])
+
+	shapeOrig := image.Rect(shape.Min.X, shape.Min.Y, width, height)
+
+	srcImage := image.NewRGBA(shapeOrig)
+
+	for y := 0; y < int(grid[0]); y++ {
+
+		for x := 0; x < int(grid[1]); x++ {
+
+			tile := tiles[i]
+
+			draw.Draw(srcImage, tile.Bounds(), tile, image.Point{
+				x * shape.Min.X,
+				y * shape.Min.Y,
+			}, draw.Src)
+
+		}
+
+	}
+	img = srcImage
 	return
 }

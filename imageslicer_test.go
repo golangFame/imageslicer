@@ -23,10 +23,10 @@ func TestSlice(t *testing.T) {
 	}
 
 	grids := [][2]uint{
-		{1, 1},
-		{1, 2},
-		{1, 10},
-		{2, 0},
+		//{1, 1},
+		//{1, 2},
+		//{1, 10},
+		//{2, 0},
 		{2, 1},
 		{3, 0},
 		{3, 1},
@@ -49,6 +49,13 @@ func TestSlice(t *testing.T) {
 		} else {
 			t.Logf("%v passed", grid)
 		}
+
+		joinedImg, err := imageslicer.Join(tiles, grid)
+		if err != nil {
+			t.Errorf("joining failed due to %s", err)
+		}
+
+		t.Logf("joinedImg %v %v", joinedImg.Bounds(), img.Bounds())
 	}
 
 }
