@@ -3,7 +3,6 @@ package imageslicer
 import (
 	"bytes"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"image"
 	"image/draw"
 	"image/jpeg"
@@ -42,7 +41,7 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 	return
 }
 
-func Join(tiles []image.Image, grid [2]uint, c *websocket.Conn) (img image.Image, err error) {
+func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 
 	expectedNoOfTiles := int(grid[0] * grid[1])
 
@@ -62,22 +61,26 @@ func Join(tiles []image.Image, grid [2]uint, c *websocket.Conn) (img image.Image
 
 	srcImage := image.NewRGBA(shapeOrig)
 
+	w := shapeOrig.Max.X / int(grid[1])
+	h := shapeOrig.Max.Y / int(grid[0])
+
+	fmt.Println(shapeOrig)
 	for x := 0; x < int(grid[0]); x++ {
 		for y := 0; y < int(grid[1]); y++ {
 
-			fmt.Println(shape.Max.X*x, shape.Max.Y*y)
+			X := shapeOrig.Min.X + w*y
+			Y := shapeOrig.Min.Y + h*x
+			//fmt.Println(X, Y)
 
 			tile := tiles[i]
 
 			draw.Draw(srcImage, tile.Bounds(), tile, image.Point{
-				shape.Max.X * x,
-				shape.Max.Y * y,
+				X, Y,
 			}, draw.Over)
 
-			c.WriteMessage(websocket.BinaryMessage, getBytes(srcImage))
 			i += 1
+			//shape.Min.X += shape.Max.X
 		}
-
 	}
 	img = srcImage
 	return
