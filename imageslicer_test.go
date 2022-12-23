@@ -113,7 +113,7 @@ var compareColor = func(color1, color2 color.Color) (flag bool) {
 
 	rC2, gC2, bC2, aC2 := color1.RGBA()
 
-	//flag = color1.RGBA() == color2.RGBA()
+	//flag = color1.RGBA() == color2.RGBA() //Doesn't work runtime error.!
 
 	flag = rC1 == rC2 && gC1 == gC2 && bC1 == bC2 && aC1 == aC2
 
@@ -143,7 +143,7 @@ var procureImages = func() (imgs []image.Image) {
 			img := imageslicer.GetImageFromUrl(imgUrl)
 
 			if img == nil {
-				fmt.Printf("image-%d not found in the url", i)
+				fmt.Printf("image-%d not found in the url", i) //FIXME ideally itegrate to the test
 			}
 
 			imgs = append(imgs, img)
