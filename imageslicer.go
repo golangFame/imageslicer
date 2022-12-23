@@ -2,10 +2,15 @@ package imageslicer
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"image"
 	"image/draw"
 	"image/jpeg"
+	"image/png"
+	"log"
+	"net/http"
+	"strings"
 )
 
 type Grid struct {
@@ -78,7 +83,7 @@ func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 	return
 }
 
-func getBytes(i image.Image) (b []byte) {
+func GetBytes(i image.Image) (b []byte) {
 	var outWriter bytes.Buffer
 
 	err := jpeg.Encode(&outWriter, i, nil)
@@ -87,5 +92,57 @@ func getBytes(i image.Image) (b []byte) {
 	}
 	b = outWriter.Bytes()
 
+	return
+}
+
+func GetImageFromUrl(url string) (img image.Image) {
+	res, err := http.Get(url)
+	if err != nil || res.StatusCode != 200 {
+		// handle errors
+		log.Println("err", err)
+		return
+	}
+	defer res.Body.Close()
+	img, _, err = image.Decode(res.Body)
+	if err != nil {
+		log.Println("err", err)
+		return
+	}
+	return
+}
+
+func GetImageFromBase64(base64Img string) (img image.Image, err error) {
+
+	mimeTypeIndex := strings.LastIndex(base64Img, ";base64,")
+
+	imageType := "jpeg"
+
+	if mimeTypeIndex != -1 {
+		mimeType := base64Img[:mimeTypeIndex]
+		base64Img = strings.TrimPrefix(base64Img, mimeType)
+
+		imageType = strings.TrimPrefix(mimeType, "data:image/")
+	}
+	fmt.Println(imageType)
+
+	base64Img = strings.TrimPrefix(base64Img, ";base64,")
+
+	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(base64Img))
+
+	switch imageType {
+
+	case "jpeg", "jpg":
+		img, err = jpeg.Decode(reader)
+	case "png":
+		img, err = png.Decode(reader)
+
+	default:
+		img, _, err = image.Decode(reader)
+	}
+
+	if err != nil {
+		err = fmt.Errorf("unable to decode the img due to %s", err)
+		return
+	}
 	return
 }

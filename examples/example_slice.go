@@ -1,31 +1,17 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/goferHiro/imageslicer"
 	"github.com/gorilla/websocket"
 	"image"
-	"image/jpeg"
 	"log"
 	"net/http"
 )
 
 var width, height int
 var m image.Image
-
-func getBytes(i image.Image) (b []byte) {
-	var outWriter bytes.Buffer
-
-	err := jpeg.Encode(&outWriter, i, nil)
-	if err != nil {
-		fmt.Println(err)
-	}
-	b = outWriter.Bytes()
-
-	return
-}
 
 func splitImage(w http.ResponseWriter, r *http.Request) {
 
@@ -74,9 +60,9 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		inputImage := getImageFromUrl(imageUrl)
+		inputImage := imageslicer.GetImageFromUrl(imageUrl)
 
-		c.WriteMessage(websocket.BinaryMessage, getBytes(inputImage))
+		c.WriteMessage(websocket.BinaryMessage, imageslicer.GetBytes(inputImage))
 
 		if err != nil {
 			c.WriteMessage(websocket.CloseMessage, []byte("unable to decode the given image"))
@@ -85,7 +71,7 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 		tiles := imageslicer.Slice(inputImage, grid)
 
 		for _, tile := range tiles {
-			c.WriteMessage(websocket.BinaryMessage, getBytes(tile))
+			c.WriteMessage(websocket.BinaryMessage, imageslicer.GetBytes(tile))
 		}
 		outImage, err := imageslicer.Join(tiles, grid)
 
@@ -94,24 +80,8 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		c.WriteMessage(websocket.TextMessage, []byte("joined image"))
-		c.WriteMessage(websocket.BinaryMessage, getBytes(outImage))
+		c.WriteMessage(websocket.BinaryMessage, imageslicer.GetBytes(outImage))
 	}
-}
-
-func getImageFromUrl(url string) (img image.Image) {
-	res, err := http.Get(url)
-	if err != nil || res.StatusCode != 200 {
-		// handle errors
-		log.Println("err", err)
-		return
-	}
-	defer res.Body.Close()
-	img, _, err = image.Decode(res.Body)
-	if err != nil {
-		log.Println("err", err)
-		return
-	}
-	return
 }
 
 func main() {
