@@ -62,6 +62,11 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 
 		inputImage := imageslicer.GetImageFromUrl(imageUrl)
 
+		if inputImage == nil {
+			c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("get image from url failed for %s", imageUrl)))
+			continue
+		}
+
 		c.WriteMessage(websocket.BinaryMessage, imageslicer.GetBytes(inputImage))
 
 		if err != nil {
