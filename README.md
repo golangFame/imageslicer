@@ -14,7 +14,7 @@ Eventually, I  had to settle down with python's [image-slicer](https://pypi.org/
 
 This incident made me realize that I can build a 35x faster library in Go. Hence, the inception of [image-slicer](https://github.com/goferHiro/image-slicer).
 
-### Usecase 1: Split Images into Tiles on the basis of a Grid
+### Usecase 1: Split images into tiles
 
 
 <details open>
@@ -25,7 +25,7 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 
 </details>
 
-### Usecases 2: Join the tiles back together.
+### Usecases 2: Join the tiles back together
 
 <details open>
 
