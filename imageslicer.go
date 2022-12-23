@@ -123,7 +123,6 @@ func GetImageFromBase64(base64Img string) (img image.Image, err error) {
 
 		imageType = strings.TrimPrefix(mimeType, "data:image/")
 	}
-	fmt.Println(imageType)
 
 	base64Img = strings.TrimPrefix(base64Img, ";base64,")
 
