@@ -62,7 +62,7 @@ IMAGE:
 		} else {
 			shapeJ := joinedImg.Bounds()
 			shapeI := img.Bounds()
-			t.Logf("[JOIN] %v %v", shapeJ, shapeI)
+			t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
 
 			if shapeI != shapeJ {
 				t.Log("[JOIN] pixels lost while splitting")
@@ -148,7 +148,6 @@ var procureImages = func() (imgs []image.Image) {
 
 			imgs = append(imgs, img)
 		}(imgUrl)
-
 	}
 
 	base64s := []string{
