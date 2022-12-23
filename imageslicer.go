@@ -65,11 +65,11 @@ func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 	h := shapeOrig.Max.Y / int(grid[0])
 
 	fmt.Println(shapeOrig)
-	for x := 0; x < int(grid[0]); x++ {
-		for y := 0; y < int(grid[1]); y++ {
+	for y := 0; y < int(grid[0]); y++ {
+		for x := 0; x < int(grid[1]); x++ {
 
-			X := shapeOrig.Min.X + w*y
-			Y := shapeOrig.Min.Y + h*x
+			X := shapeOrig.Min.X + w*x
+			Y := shapeOrig.Min.Y + h*y
 			//fmt.Println(X, Y)
 
 			tile := tiles[i]
