@@ -3,9 +3,12 @@ package imageslicer_test
 import (
 	"encoding/base64"
 	"github.com/goferHiro/imageslicer"
+	"image/color"
 	"image/jpeg"
+	"math/rand"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestSlice(t *testing.T) {
@@ -61,9 +64,53 @@ func TestSlice(t *testing.T) {
 			if shapeI != shapeJ {
 				t.Log("[JOIN] pixels lost while splitting")
 			}
+			rand.Seed(time.Now().UnixNano())
+
+			testCoordinates := [][2]int{
+				{shapeI.Min.X, shapeI.Min.Y},
+			}
+			maxY := shapeJ.Max.Y
+			minY := shapeJ.Min.Y
+
+			maxX := shapeJ.Max.X //ideally should be using origImg but that will fail for edge cases for certain imgs
+			minX := shapeJ.Min.X
+
+			for i := 0; i < (maxY-minY)/3; i++ { //TODO : should we test all coords
+				randY := rand.Intn(maxY-minY+1) + minY
+				randX := rand.Intn(maxX-minX+1) + minX
+
+				testCoordinates = append(testCoordinates, [2]int{randX, randY})
+			}
+
+			for _, coord := range testCoordinates {
+				x := coord[0]
+				y := coord[1]
+
+				colorI := img.At(x, y)
+				colorJ := joinedImg.At(x, y)
+
+				if compareColor(colorI, colorJ) {
+					t.Logf("coord %v", coord)
+				} else {
+					t.Errorf("failed coord %v", coord)
+				}
+			}
 
 		}
 
 	}
 
+}
+
+var compareColor = func(color1, color2 color.Color) (flag bool) {
+
+	rC1, gC1, bC1, aC1 := color1.RGBA()
+
+	rC2, gC2, bC2, aC2 := color1.RGBA()
+
+	//flag = color1.RGBA() == color2.RGBA()
+
+	flag = rC1 == rC2 && gC1 == gC2 && bC1 == bC2 && aC1 == aC2
+
+	return
 }
