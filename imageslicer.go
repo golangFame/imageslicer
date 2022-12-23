@@ -97,8 +97,7 @@ func GetBytes(i image.Image) (b []byte) {
 
 func GetImageFromUrl(url string) (img image.Image) {
 	res, err := http.Get(url)
-	if err != nil || res.StatusCode != 200 {
-		// handle errors
+	if err != nil {
 		log.Println("err", err)
 		return
 	}
@@ -113,18 +112,16 @@ func GetImageFromUrl(url string) (img image.Image) {
 
 func GetImageFromBase64(base64Img string) (img image.Image, err error) {
 
-	mimeTypeIndex := strings.LastIndex(base64Img, ";base64,")
+	mimeTypeIndex := strings.Index(base64Img, ";base64,")
 
-	imageType := "jpeg"
+	imageType := ""
 
 	if mimeTypeIndex != -1 {
 		mimeType := base64Img[:mimeTypeIndex]
-		base64Img = strings.TrimPrefix(base64Img, mimeType)
-
+		base64Img = strings.TrimPrefix(base64Img, mimeType+";base64,")
 		imageType = strings.TrimPrefix(mimeType, "data:image/")
-	}
 
-	base64Img = strings.TrimPrefix(base64Img, ";base64,")
+	}
 
 	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(base64Img))
 
