@@ -34,7 +34,9 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 ![hiro4*4R](https://user-images.githubusercontent.com/103487904/209412186-83ffec0c-acef-4d3b-b1b2-5c06c101078b.png)
 
 </details>
+
 ## Support
+
 
 You can file an [Issue](https://github.com/goferHiro/image-slicer/issues/new).
 See documentation in [Go.Dev](https://pkg.go.dev/github.com/goferHiro/image-slicer?tab=doc)
