@@ -27,7 +27,7 @@ then
 fi
 
 PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
-  | grep -E -v "examples\" \
+  | grep -E -v "examples" \
   | sed 's/^\.\///' \
   | sort)
 
