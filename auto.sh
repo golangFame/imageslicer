@@ -15,8 +15,8 @@ tag=$(echo "$tag" | sed 's/ //g')
 export TAG=$tag
 
 
-#chmod +x scripts/release.sh
-#chmod +x scripts/tag.sh
+chmod +x scripts/release.sh
+chmod +x scripts/tag.sh
 
 ./scripts/release.sh
 ./scripts/tag.sh
