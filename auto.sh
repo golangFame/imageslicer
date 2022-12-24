@@ -10,7 +10,7 @@ echo "what's the tag"
 
 read tag
 
-set TAG=$tag
+export TAG=$tag
 
 chmod +x scripts/release.sh
 chmod +x scripts/tag.sh
