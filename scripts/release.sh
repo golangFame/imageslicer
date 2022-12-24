@@ -43,11 +43,12 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
   | sed 's/^\.\///' \
   | sort)
 
-for dir in $PACKAGE_DIRS
-do
-    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
-    (cd ./${dir} && go get -u && go mod tidy -compat=1.19)
-done
+#for dir in $PACKAGE_DIRS
+#do
+#    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
+#    (cd ./${dir} && go get -u && go mod tidy -compat=1.19)
+#done
+#temporarily suspending
 
 for dir in $PACKAGE_DIRS
 do
