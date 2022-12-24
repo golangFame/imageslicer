@@ -95,8 +95,8 @@ func GetBytes(i image.Image) (b []byte) {
 	return
 }
 
-func GetImageFromUrl(url string) (img image.Image) {
-	res, err := http.Get(url)
+func GetImageFromUrl(imgUrl string) (img image.Image) {
+	res, err := http.Get(imgUrl)
 	if err != nil {
 		log.Println("err", err)
 		return
