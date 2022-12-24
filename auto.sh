@@ -4,7 +4,7 @@ read tag
 
 set TAG=$tag
 
-
+git pull
 
 sh scripts/release.sh
 sh scripts/tag.sh
