@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/goferHiro/imageslicer"
+	"github.com/goferHiro/image-slicer"
 	"log"
 )
 
