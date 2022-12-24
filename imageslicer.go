@@ -164,6 +164,7 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 		img, err = png.Decode(f1)
 
 	default:
+		log.Println("img type may not be supported") //TODO bring in the logger
 		img, _, err = image.Decode(f1)
 	}
 
