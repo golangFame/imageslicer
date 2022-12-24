@@ -23,4 +23,7 @@ chmod +x scripts/tag.sh
 ./scripts/release.sh
 ./scripts/tag.sh
 
+git add .
+git commit -m "deps-$tag"
+
 git push origin --tags
