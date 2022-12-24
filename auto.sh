@@ -10,6 +10,8 @@ echo "what's the tag"
 
 read tag
 
+tag=$(echo "$tag" | sed 's/ //g')
+
 export TAG=$tag
 
 
