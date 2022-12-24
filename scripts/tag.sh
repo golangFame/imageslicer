@@ -19,7 +19,7 @@ then
     printf "TAG env var is required\n\n";
     help
 fi
-
+pwd
 if ! grep -Fq "\"${TAG#v}\"" version.go
 then
     printf "version.go does not contain ${TAG#v}\n"
