@@ -10,6 +10,8 @@ import (
 	"image/png"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 )
 
@@ -95,7 +97,7 @@ func GetBytes(i image.Image) (b []byte) {
 	return
 }
 
-func GetImageFromUrl(imgUrl string) (img image.Image) {
+func GetImageFromUrl(imgUrl string) (img image.Image) { //FIXME add error return and remove log
 	res, err := http.Get(imgUrl)
 	if err != nil {
 		log.Println("err", err)
@@ -140,5 +142,35 @@ func GetImageFromBase64(base64Img string) (img image.Image, err error) {
 		err = fmt.Errorf("unable to decode the img due to %s", err)
 		return
 	}
+	return
+}
+
+func GetImageFromPath(imgPath string) (img image.Image, err error) {
+
+	f1, err := os.Open(imgPath)
+	if err != nil {
+		err = fmt.Errorf("failed to open image due to %s", err)
+		return
+	}
+	defer f1.Close()
+
+	imageType := path.Ext(imgPath)
+
+	switch imageType {
+
+	case "jpeg", "jpg":
+		img, err = jpeg.Decode(f1)
+	case "png":
+		img, err = png.Decode(f1)
+
+	default:
+		img, _, err = image.Decode(f1)
+	}
+
+	if err != nil {
+		err = fmt.Errorf("failed to decode image due to %s", err)
+		return
+	}
+
 	return
 }
