@@ -12,7 +12,7 @@ read tag
 
 set TAG=$tag
 
-sh scripts/release.sh
-sh scripts/tag.sh
+TAG=$tag sh scripts/release.sh
+TAG=$tag sh scripts/tag.sh
 
 git push origin --tags
