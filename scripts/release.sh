@@ -59,8 +59,8 @@ pwd
 
 sed --in-place "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go
 
-git checkout -b release/${TAG} main
+#git checkout -b release/${TAG} main
 git add -u
 git commit -m "chore: release $TAG"
-git tag ${TAG}
+#git tag ${TAG}
 #git push origin release/${TAG}
