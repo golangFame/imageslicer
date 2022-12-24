@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestSlice(t *testing.T) {
+func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
 
@@ -145,7 +145,9 @@ var procureImages = func() (imgs []image.Image) {
 			img := imageslicer.GetImageFromUrl(imgUrl)
 
 			if img == nil {
-				panic(fmt.Sprintf("image-%d not found in the url", i)) //FIXME ideally itegrate to the test
+				//panic(fmt.Sprintf("image-%d not found in the url", i)) //FIXME ideally itegrate to the test
+				fmt.Printf("img-%d unable to retreive image\n", i)
+				return
 			}
 
 			imgs = append(imgs, img)
