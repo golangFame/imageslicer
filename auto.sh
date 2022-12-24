@@ -12,8 +12,9 @@ read tag
 
 export TAG=$tag
 
-chmod +x scripts/release.sh
-chmod +x scripts/tag.sh
+
+#chmod +x scripts/release.sh
+#chmod +x scripts/tag.sh
 
 ./scripts/release.sh
 ./scripts/tag.sh
