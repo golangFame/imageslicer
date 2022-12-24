@@ -29,7 +29,7 @@ run-examples:
 	  (cd "$${dir}" && go run .); \
 	done
 
-TAG := v0.7-alpha.2
+TAG := v0.8-alpha.1
 
 tag:
 	TAG=$(TAG) ./scripts/tag.sh
