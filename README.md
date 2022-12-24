@@ -36,6 +36,14 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 
 <details open>
 
+<summary>Grid [2*2] </summary>
+
+![hiro2*2R](https://user-images.githubusercontent.com/103487904/209429783-0c7477e4-2703-477e-b7db-a50ca8a5f196.png)
+
+</details>
+
+<details open>
+
 <summary>Grid [4*4] </summary>
 
 ![hiro4*4R](https://user-images.githubusercontent.com/103487904/209412186-83ffec0c-acef-4d3b-b1b2-5c06c101078b.png)
