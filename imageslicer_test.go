@@ -5,7 +5,9 @@ import (
 	imageslicer "github.com/goferHiro/image-slicer"
 	"image"
 	"image/color"
+	"log"
 	"math/rand"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -170,7 +172,50 @@ var procureImages = func() (imgs []image.Image) {
 		}
 	}
 
+	imgDir := "images"
+
+	imgFiles, err := lsDir(imgDir)
+
+	if err == nil {
+		for _, imgFile := range imgFiles {
+			wg.Add(1)
+			go func(imgFile string) {
+				defer wg.Done()
+				img, err := imageslicer.GetImageFromPath(imgFile)
+
+				if err != nil {
+					log.Println("err", err)
+					log.Fatalf("failed to retreive image-%s\n", imgFile)
+				}
+				log.Println("imgFile", imgFile)
+
+				imgs = append(imgs, img)
+			}(imgFile)
+		}
+	}
+
 	wg.Wait()
+
+	return
+}
+
+func lsDir(dirPath string) (files []string, err error) {
+	files_, err := os.ReadDir(dirPath)
+
+	if err != nil {
+		err = fmt.Errorf("lsDir failed due to-%s", err)
+		return
+	}
+
+	for _, file := range files_ {
+		path_ := fmt.Sprintf("%s/%s", dirPath, file.Name())
+		if file.IsDir() {
+			files__, _ := lsDir(path_)
+			files = append(files, files__...)
+		} else {
+			files = append(files, path_)
+		}
+	}
 
 	return
 }

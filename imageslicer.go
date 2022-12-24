@@ -154,9 +154,11 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 	}
 	defer f1.Close()
 
-	imageType := path.Ext(imgPath)
+	imgType := path.Ext(imgPath)
 
-	switch imageType {
+	imgType = strings.TrimPrefix(imgType, ".")
+
+	switch imgType {
 
 	case "jpeg", "jpg":
 		img, err = jpeg.Decode(f1)
@@ -164,7 +166,7 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 		img, err = png.Decode(f1)
 
 	default:
-		log.Println("img type may not be supported") //TODO bring in the logger
+		log.Printf("img type-%s may not be supported", imgType) //TODO bring in the logger
 		img, _, err = image.Decode(f1)
 	}
 
