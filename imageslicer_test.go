@@ -2,6 +2,7 @@ package imageslicer_test
 
 import (
 	"fmt"
+	imageslicer "github.com/goferHiro/image-slicer"
 	"image"
 	"image/color"
 	"math/rand"
