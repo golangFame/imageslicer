@@ -16,6 +16,13 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 
 ### Usecase 1: Split images into tiles
 
+<details open>
+    
+<summary>Grid [2*2] </summary>
+
+![hiro2*2](https://user-images.githubusercontent.com/103487904/209413031-72818169-6a2b-4280-a375-69836f3c7f7d.png)
+
+</details>
 
 <details open>
 
@@ -26,6 +33,14 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 </details>
 
 ### Usecases 2: Join the tiles back together
+
+<details open>
+
+<summary>Grid [2*2] </summary>
+
+![hiro2*2R](https://user-images.githubusercontent.com/103487904/209429783-0c7477e4-2703-477e-b7db-a50ca8a5f196.png)
+
+</details>
 
 <details open>
 
