@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	imageslicer "github.com/goferHiro/image-slicer"
+	"github.com/goferHiro/image-slicer"
 	"github.com/gorilla/websocket"
 	"image"
 	"log"
