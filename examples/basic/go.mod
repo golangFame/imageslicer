@@ -4,4 +4,4 @@ go 1.19
 
 replace github.com/goferHiro/image-slicer => ../..
 
-require github.com/goferHiro/image-slicer v1.0.0
+require github.com/goferHiro/image-slicer v1.0.1-alpha
