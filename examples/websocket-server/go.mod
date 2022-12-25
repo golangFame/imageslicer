@@ -5,7 +5,7 @@ go 1.19
 replace github.com/goferHiro/image-slicer => ../..
 
 require (
-	github.com/goferHiro/image-slicer v1.0-alpha
+	github.com/goferHiro/image-slicer v1.0
 	github.com/gorilla/websocket v1.5.0
 )
 
