@@ -6,4 +6,6 @@ retract (
 	//unstable versions
 	v0.8.1-alpha.1
 	v0.8.1-alpha.1
+
+	v1.0.0 //doesn't support examples due to replace
 )
