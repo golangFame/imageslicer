@@ -4,6 +4,8 @@ echo "pulling"
 
 git pull
 
+go work sync
+
 git describe --tags
 
 echo "what's the tag"

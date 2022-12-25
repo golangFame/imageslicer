@@ -1,2 +1,3 @@
 github.com/goferHiro/image-slicer v1.0.0/go.mod h1:z1cSblN+2fXIqHFbEl7PQ8ZyB/tEMAXEaYbZw0WyYHQ=
 github.com/goferHiro/image-slicer v1.0.1-alpha/go.mod h1:JRzYMXkRybN02/TMXCRq1FlMqlt2pfp4l7UREl3A7+U=
+github.com/goferHiro/image-slicer v1.0.1-beta/go.mod h1:xRC5Ho9leL4RIszVD/h3dS3gUPDf/E+vaKImQOme7cE=
