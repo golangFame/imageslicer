@@ -20,7 +20,7 @@ then
     help
 fi
 
-TAG_REGEX="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+TAG_REGEX="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
 if ! [[ "${TAG}" =~ ${TAG_REGEX} ]]; then
     printf "TAG is not valid: ${TAG}\n\n"
     exit 1
@@ -43,11 +43,11 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
   | sed 's/^\.\///' \
   | sort)
 
-#for dir in $PACKAGE_DIRS
-#do
-#    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
-#    (cd ./${dir} && go get -u && go mod tidy -compat=1.19)
-#done
+for dir in $PACKAGE_DIRS
+do
+    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
+    (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
+done
 #temporarily suspending
 
 for dir in $PACKAGE_DIRS
