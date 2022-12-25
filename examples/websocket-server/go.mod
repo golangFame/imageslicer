@@ -3,7 +3,7 @@ module github.com/goferHiro/image-slicer/examples/websocket-server
 go 1.19
 
 require (
-	github.com/goferHiro/image-slicer v1.0.3-alpha
+	github.com/goferHiro/image-slicer v1.0.3
 	github.com/gorilla/websocket v1.5.0
 )
 
