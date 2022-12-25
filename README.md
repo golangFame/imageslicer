@@ -1,7 +1,7 @@
 # image-slicer
 Split images into tiles. 
 
-Peform advanced image processing in Go - slice images into tiles, combine the tiles.
+Perform advanced image processing in Go - slice images into tiles, combine the tiles.
 
 [![Go](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml)
 [![Go.Dev](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/goferHiro/image-slicer?tab=doc)
