@@ -30,3 +30,8 @@ git commit -m "final deps-$tag"
 
 git push
 git push origin --tags
+
+
+go list -m -json github.com/goferHiro/image-slicer/examples/basic@latest
+go list -m -json github.com/goferHiro/image-slicer/examples/websocket-server@latest
+go list -m -json github.com/goferHiro/image-slicer@latest
