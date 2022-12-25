@@ -163,5 +163,4 @@ img := imageslicer.GetImageFromUrl(imgUrl)
 
 ---
 
-To contribute to this project, you can open a PR or an issue.
-Its very convenient if you are aware of image storage and processing along with best practices in Go.
+- You can submit an issue or create a Pull Request (PR)
