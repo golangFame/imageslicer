@@ -45,13 +45,6 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
 
 for dir in $PACKAGE_DIRS
 do
-    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
-    (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
-done
-#temporarily suspending
-
-for dir in $PACKAGE_DIRS
-do
     sed --in-place \
       "s/goferHiro\/image-slicer\([^ ]*\) v.*/goferHiro\/image-slicer\1 ${TAG}/" "${dir}/go.mod"
 done
@@ -66,4 +59,12 @@ git commit -m "chore: release $TAG"
 git tag ${TAG}
 git push origin ${TAG}
 
+for dir in $PACKAGE_DIRS
+do
+    printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
+    go get github.com/image-slicer@${TAG}
+    (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
+done
+
+git push origin
 #git push origin release/${TAG}
