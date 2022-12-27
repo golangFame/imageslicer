@@ -62,7 +62,7 @@ git push origin ${TAG}
 for dir in $PACKAGE_DIRS
 do
     printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
-    go get github.com/image-slicer@${TAG}
+    go get github.com/goferHiro/image-slicer@${TAG}
     (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
 done
 
