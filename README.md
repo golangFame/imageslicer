@@ -25,6 +25,14 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 </details>
 
 <details open>
+    
+<summary>Grid [3*3] </summary>
+
+![hiro3x3J](https://user-images.githubusercontent.com/103487904/209637746-18aa10da-1bd5-4996-99af-f4a217fdd410.png)
+
+</details>
+
+<details open>
 
 <summary>Grid [4*4] </summary>
 
@@ -39,6 +47,14 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 <summary>Grid [2*2] </summary>
 
 ![hiro 2x2R](https://user-images.githubusercontent.com/103487904/209455841-f3db61f6-49f5-45af-b32b-a26f9cfcbc65.png)
+
+</details>
+
+<details open>
+    
+<summary>Grid [3*3] </summary>
+
+![hiro3x3R](https://user-images.githubusercontent.com/103487904/209637871-aa582b6c-7c3d-460a-9fc1-292942fdb2c2.png)
 
 </details>
 
