@@ -136,7 +136,7 @@ var procureImages = func() (imgs []image.Image) {
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
-		"https://pixabay.com/get/g3418065863d48bdbd584233ca1fe58ecd71687f8a55b94faf5a0fc885f8f9d353f2ddecb78dd55ba329ef6ec2ab2f76b269d41b01ad5603e0eb410d6f0cfcb03968ffc6158ddcc3ff327769f94c04a01_1920.png",
+		"http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/nebula_blue.s2014.png",
 		//"https://svgshare.com/getbyhash/sha1-5pvW7UW07yfTh+HFUb3gVz0d7s0=",//FIXME add a failing test-svg not supported
 	}
 
