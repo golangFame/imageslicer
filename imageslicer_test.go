@@ -127,16 +127,18 @@ var procureImages = func() (imgs []image.Image) {
 	var wg sync.WaitGroup
 
 	urls := []string{
-		"https://bzdevstorageaccount.blob.core.windows.net/bzingaonboardingimage/product_01_01.png",
-		"https://bzdevstorageaccount.blob.core.windows.net/bzingaonboardingimage/product_01_02.png",
-		"https://bzdevstorageaccount.blob.core.windows.net/bzingaonboardingimage/product_02_01.png",
-		"https://bzdevstorageaccount.blob.core.windows.net/bzingaonboardingimage/product_02_02.png",
 		"https://static.wikia.nocookie.net/big-hero-6-fanon/images/0/0f/Hiro.jpg/revision/latest?cb=20180511180437",
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwOJvQSpkphlKYMPTPgvuKiLOQuccmeoP-GQ&usqp=CAU",
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
 		"https://i.insider.com/5ed95c393f7370198527eea3?width=700",
 		"http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/nebula_blue.s2014.png",
+		"https://freepngimg.com/thumb/christmas/12-2-christmas-png.png",
+		"https://freepngimg.com/thumb/christmas/6-2-christmas-free-png-image.png",
+		"https://freepngimg.com/thumb/christmas/26643-8-christmas-wreath-photo.png",
+		"https://freepngimg.com/thumb/christmas/30174-5-christmas-tree-photos.png",
+		"https://freepngimg.com/thumb/christmas/24399-6-christmas-nature-image.png",
+		"https://freepngimg.com/thumb/christmas/24556-6-christmas-scenes-photos.png",
 		//"https://svgshare.com/getbyhash/sha1-5pvW7UW07yfTh+HFUb3gVz0d7s0=",//FIXME add a failing test-svg not supported
 	}
 
