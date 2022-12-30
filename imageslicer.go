@@ -37,7 +37,9 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 
 		for x := shape.Min.X; x+width <= shape.Max.X; x += width {
 
-			tile := image.NewRGBA(image.Rect(x, y, x+width, y+height)) //FIXME what bullshit is this. there is no mention of original image
+			tile := img.(interface {
+				SubImage(r image.Rectangle) image.Image
+			}).SubImage(image.Rect(x, y, x+width, y+height))
 
 			tiles = append(tiles, tile)
 		}
