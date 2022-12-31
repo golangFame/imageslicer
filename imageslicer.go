@@ -68,18 +68,22 @@ func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 
 	srcImage := image.NewRGBA(shapeOrig)
 
-	for y := 0; y < int(grid[0]); y++ {
-		for x := 0; x < int(grid[1]); x++ {
+	for y, minY := 0, shapeOrig.Min.Y; y < int(grid[0]); y++ {
+
+		for x, minX := 0, shapeOrig.Min.X; x < int(grid[1]); x++ {
 
 			tile := tiles[i]
+			shape := tile.Bounds()
 
-			draw.Draw(srcImage, tile.Bounds(), tile, image.Point{
-				x * shape.Max.X, y * shape.Max.Y,
-			}, draw.Over)
+			draw.Draw(srcImage, shape, tile, shape.Min, draw.Src)
 
 			i += 1
-			//shape.Min.X += shape.Max.X
+
+			minX += shape.Min.X //not required really
+
 		}
+		minY += shape.Min.Y
+
 	}
 	img = srcImage
 	return
