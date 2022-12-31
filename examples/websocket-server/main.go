@@ -106,6 +106,7 @@ func main() {
 func drawBorder(img image.Image, borderSize int) (borderedImg image.Image) {
 
 	bounds := img.Bounds()
+
 	newBounds := image.Rect(bounds.Min.X-borderSize, bounds.Min.Y-borderSize, bounds.Max.X+borderSize, bounds.Max.Y+borderSize)
 	newImg := image.NewRGBA(newBounds)
 
@@ -113,7 +114,7 @@ func drawBorder(img image.Image, borderSize int) (borderedImg image.Image) {
 	draw.Draw(newImg, bounds, img, bounds.Min, draw.Src)
 
 	// Draw the border onto the new image
-	borderColor := color.RGBA{255, 255, 255, 1}
+	borderColor := color.RGBA{0, 0, 0, 0}
 	draw.Draw(newImg, newImg.Bounds(), &image.Uniform{borderColor}, image.ZP, draw.Over)
 
 	borderedImg = newImg
