@@ -6,8 +6,6 @@ echo "pulling"
 
 git pull
 
-go work sync
-
 git describe --tags
 
 echo "what's the tag"
@@ -23,6 +21,8 @@ chmod +x scripts/tag.sh
 
 ./scripts/release.sh
 ./scripts/tag.sh
+
+go work sync
 
 git add .
 git commit -m "final deps-$tag"
