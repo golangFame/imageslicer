@@ -53,7 +53,9 @@ pwd
 
 sed --in-place "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go
 
-#git checkout -b release/${TAG}
+git checkout -b release/${TAG}
+git branch -u origin/release/${TAG}
+
 git add -u
 git commit -m "chore: release $TAG"
 git tag ${TAG}
@@ -62,8 +64,8 @@ git push origin ${TAG}
 for dir in $PACKAGE_DIRS
 do
     printf "${dir}: go get -u && go mod tidy -compat=1.19\n"
-    go get github.com/goferHiro/image-slicer@${TAG}
+    go get github.com/bxcodec/gotcha@${TAG}
     (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
 done
 
-#git push origin release/${TAG}
+#git push --set-upstream origin release/${TAG}
