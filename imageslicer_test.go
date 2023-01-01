@@ -20,6 +20,8 @@ var images = procureImages()
 
 var grids = procureGrids()
 
+var now = time.Now()
+
 func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
@@ -131,7 +133,7 @@ func FuzzSlice(f *testing.F) {
 		for i := 0; i < 100; i++ {
 			randImgID := rand.Intn(len(images))
 			randRow := rand.Intn(1000) + 1
-			randCol := rand.Intn(1000) + 1
+			randCol := rand.Intn(randRow+1) + 1
 
 			f.Add(uint(randImgID), uint(randRow), uint(randCol))
 		}
