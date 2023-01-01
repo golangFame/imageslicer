@@ -125,9 +125,10 @@ func TestSlice(t *testing.T) {
 
 func FuzzSlice(f *testing.F) {
 
-	f.Fuzz(func(t *testing.T, imgID int) {
-		//imgID := rand.Intn(len(images))
-		if imgID >= len(images) {
+	f.Fuzz(func(t *testing.T, imgID uint8) {
+		t.Logf("[slice] %d", imgID)
+
+		if int(imgID) >= len(images) {
 			f.Skipf("invalid imgID-%d", imgID)
 			//f.SkipNow()
 		}
@@ -136,6 +137,7 @@ func FuzzSlice(f *testing.F) {
 
 		if img == nil {
 			t.Errorf("invalid img-%d", imgID)
+			f.SkipNow()
 		}
 
 		grids := procureGrids()
@@ -148,7 +150,9 @@ func FuzzSlice(f *testing.F) {
 
 		if len(tiles) != expectedNoOfTiles {
 			t.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+			f.SkipNow()
 		}
+		t.Logf("[slice] %d", imgID)
 	})
 
 }
