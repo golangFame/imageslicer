@@ -104,7 +104,7 @@ func GetBytes(i image.Image) (b []byte) {
 func GetImageFromUrl(imgUrl string) (img image.Image) { //FIXME add error return and remove log
 	res, err := http.Get(imgUrl)
 	if err != nil {
-		log.Printf("http-res %d %s\n", res.StatusCode, res.Status)
+		//log.Printf("http-res %d %s\n", res.StatusCode, res.Status)
 		log.Println("err", err)
 		return
 	}
