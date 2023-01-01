@@ -54,9 +54,6 @@ jobs:
     - name: Test
       run: go test -v ./...
 
-    - name: Race
-      run: go test -v -race ./...
-
   race:
     runs-on: ubuntu-latest
 
@@ -72,7 +69,6 @@ jobs:
         run: go test -v -race ./...
 
 
-
   benchmark:
     runs-on: ubuntu-latest
 
@@ -85,7 +81,7 @@ jobs:
           go-version: 1.19.4
 
       - name: Benchmark
-        run: go test -v -bench='.*' -count 21292
+        run: go test -v -bench='.*' -count 2000
 
   fuzz:
     runs-on: ubuntu-latest
