@@ -121,6 +121,32 @@ func TestSlice(t *testing.T) {
 
 }
 
+func BenchmarkSlice(b *testing.B) {
+
+	images := procureImages()
+	imgID := rand.Intn(len(images))
+	img := images[imgID]
+
+	if img == nil {
+		b.Errorf("invalid img-%d", imgID)
+	}
+
+	grids := procureGrids()
+	gridID := rand.Intn(len(grids))
+	grid := grids[gridID]
+
+	b.StartTimer()
+
+	tiles := imageslicer.Slice(img, grid)
+
+	expectedNoOfTiles := int(grid[0] * grid[1])
+
+	if len(tiles) != expectedNoOfTiles {
+		b.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+	}
+
+}
+
 var compareColor = func(color1, color2 color.Color) (flag bool) {
 
 	rC1, gC1, bC1, aC1 := color1.RGBA()
@@ -201,7 +227,7 @@ var procureImages = func() (imgs []image.Image) {
 					log.Println("err", err)
 					log.Fatalf("failed to retreive image-%s\n", imgFile)
 				}
-				log.Println("imgFile", imgFile)
+				//log.Println("imgFile", imgFile)
 
 				imgs = append(imgs, img)
 			}(imgFile)
