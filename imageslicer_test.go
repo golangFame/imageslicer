@@ -18,6 +18,8 @@ type unitTest struct {
 
 var images = procureImages()
 
+var grids = procureGrids()
+
 func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
@@ -168,8 +170,7 @@ func BenchmarkSlice(b *testing.B) {
 
 	b.ResetTimer()
 
-	grids := procureGrids()
-	gridID := rand.Intn(len(grids))
+	gridID := 0
 	grid := grids[gridID]
 
 	b.Logf("[testcase] img %d grid %v iter %d\n", imgID, grid, b.N)
