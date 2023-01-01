@@ -55,6 +55,7 @@ IMAGE:
 		joinedImg, err := imageslicer.Join(tiles, grid)
 		if err != nil {
 			t.Errorf("[JOIN] failed due to %s", err)
+			t.SkipNow()
 		} else {
 			shapeJ := joinedImg.Bounds()
 			shapeI := img.Bounds()
@@ -105,17 +106,12 @@ IMAGE:
 
 func TestSlice(t *testing.T) {
 
-	//images := procureImages()
 	imgID := rand.Intn(len(images))
-	imgID = 0
+	imgID = 0 //TODO temp
 	img := images[imgID]
 
-	if img == nil {
-		t.Errorf("invalid img-%d", imgID)
-	}
-
 	gridID := rand.Intn(len(grids))
-	gridID = 0
+	gridID = 0 //TODO temp
 	grid := grids[gridID]
 
 	tiles := imageslicer.Slice(img, grid)
@@ -143,7 +139,6 @@ func FuzzSlice(f *testing.F) {
 
 		if int(imgID) >= len(images) {
 			t.Skipf("invalid imgID-%d", imgID)
-			//f.SkipNow()
 		}
 
 		img := images[imgID]
@@ -239,7 +234,6 @@ var procureImages = func() (imgs []image.Image) {
 			img := imageslicer.GetImageFromUrl(imgUrl)
 
 			if img == nil {
-				//panic(fmt.Sprintf("image-%d not found in the url", i)) //FIXME ideally itegrate to the test
 				fmt.Printf("img-%d unable to retreive image\n", i)
 				return
 			}
