@@ -170,8 +170,7 @@ func BenchmarkSlice(b *testing.B) {
 	gridID := rand.Intn(len(grids))
 	grid := grids[gridID]
 
-	b.Logf("[img] %d", imgID)
-	b.Logf("grid %v\n", grid)
+	b.Logf("[testcase] img %d grid %v\n", imgID, grid)
 
 	for i := 0; i < b.N; i++ {
 
