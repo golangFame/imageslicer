@@ -26,19 +26,19 @@ jobs:
 
     - name: Examples
       run: |
-        PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
-        | sort)
-        echo $PACKAGE_DIRS
-        for dir in $PACKAGE_DIRS
-        do
-           printf "building ${dir}\n"
-           go build $dir
-#          cd $dir
-#          printf "${dir}"
-#          go get -u
-#
-#          (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
-        done
+          PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
+          | sort)
+          echo $PACKAGE_DIRS
+          for dir in $PACKAGE_DIRS
+          do
+             printf "building ${dir}\n"
+             go build $dir
+  #          cd $dir
+  #          printf "${dir}"
+  #          go get -u
+  #
+  #          (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
+          done
   test:
     runs-on: ubuntu-latest
     needs: [ build ]
