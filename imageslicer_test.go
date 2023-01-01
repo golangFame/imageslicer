@@ -192,10 +192,8 @@ func BenchmarkSlice(b *testing.B) {
 
 		b.StopTimer()
 
-		expectedNoOfTiles := int(grid[0] * grid[1])
-
-		if len(tiles) != expectedNoOfTiles {
-			b.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
+			b.Errorf("[slice] failed for img-%d due to %s", imgID, err)
 		}
 	}
 
