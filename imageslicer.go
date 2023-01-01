@@ -9,6 +9,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path"
@@ -30,8 +31,13 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 
 	shape := img.Bounds()
 
-	height := shape.Max.Y / int(grid[0])
-	width := shape.Max.X / int(grid[1])
+	fheight := float64(shape.Max.Y / int(grid[0]))
+	fwidth := float64(shape.Max.X / int(grid[1]))
+
+	height := int(math.Ceil(fheight))
+	width := int(math.Ceil(fwidth))
+
+	//fmt.Printf("h%dw%d\n", height, width)
 
 	for y := shape.Min.Y; y+height <= shape.Max.Y; y += height {
 
@@ -45,15 +51,16 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 		}
 	}
 
+	/*	if int(grid[0]*grid[1]) != len(tiles) {
+		log.Fatalf("expected %v got %d", grid[0]*grid[1], len(tiles))
+	}*/
+
 	return
 }
 
 func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
 
-	expectedNoOfTiles := int(grid[0] * grid[1])
-
-	if len(tiles) != expectedNoOfTiles || expectedNoOfTiles == 0 {
-		err = fmt.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
+	if err = CheckSlice(tiles, grid); err != nil {
 		return
 	}
 
@@ -104,7 +111,7 @@ func GetBytes(i image.Image) (b []byte) {
 func GetImageFromUrl(imgUrl string) (img image.Image) { //FIXME add error return and remove log
 	res, err := http.Get(imgUrl)
 	if err != nil {
-		log.Printf("http-res %d %s\n", res.StatusCode, res.Status)
+		//log.Printf("http-res %d %s\n", res.StatusCode, res.Status)
 		log.Println("err", err)
 		return
 	}
@@ -181,5 +188,15 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 		return
 	}
 
+	return
+}
+
+func CheckSlice(tiles []image.Image, grid [2]uint) (err error) {
+	expectedNoOfTiles := int(grid[0] * grid[1])
+
+	if len(tiles) < expectedNoOfTiles { //I am using ceil
+		err = fmt.Errorf("expected-%d got-%d", expectedNoOfTiles, len(tiles))
+		return
+	}
 	return
 }

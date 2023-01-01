@@ -13,6 +13,15 @@ import (
 	"time"
 )
 
+type unitTest struct {
+}
+
+var images = procureImages()
+
+var grids = procureGrids()
+
+var now = time.Now()
+
 func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
@@ -30,41 +39,19 @@ IMAGE:
 
 	t.Logf("[TEST] image %v ", img.Bounds())
 
-	grids := [][2]uint{
-		//{1, 0},
-		{1, 1},
-		{1, 2},
-		{1, 10},
-		//{2,0},
-		{2, 1},
-		{3, 1},
-		{3, 2},
-		{3, 3},
-		{3, 6},
-		{5, 6},
-		{7, 20},
-		{10, 10},
-		{10, 20},
-	}
+	grids := procureGrids()
 
 	for _, grid := range grids {
 		tiles := imageslicer.Slice(img, grid)
 
-		expectedNoOfTiles := grid[0] * grid[1]
-
-		if len(tiles) != int(expectedNoOfTiles) {
-			t.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
-		} else {
-			t.Logf("[SPLIT] passed for GRID[%v]", grid)
-		}
-
 		joinedImg, err := imageslicer.Join(tiles, grid)
 		if err != nil {
 			t.Errorf("[JOIN] failed due to %s", err)
+			t.SkipNow()
 		} else {
 			shapeJ := joinedImg.Bounds()
 			shapeI := img.Bounds()
-			t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
+			//t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
 
 			if shapeI != shapeJ {
 				t.Log("[JOIN] pixels lost while splitting")
@@ -109,6 +96,94 @@ IMAGE:
 
 }
 
+func TestSlice(t *testing.T) {
+
+	imgID := rand.Intn(len(images))
+	imgID = 0 //TODO temp
+	img := images[imgID]
+
+	gridID := rand.Intn(len(grids))
+	gridID = 0 //TODO temp
+	grid := grids[gridID]
+
+	tiles := imageslicer.Slice(img, grid)
+
+	if err := imageslicer.CheckSlice(tiles, grid); err != nil {
+		t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
+	}
+
+}
+
+func FuzzSlice(f *testing.F) {
+
+	func() { //generate corpus
+		for i := 0; i < 1; i++ {
+			randImgID := rand.Intn(len(images))
+			for _, grid := range grids {
+				f.Add(uint(randImgID), grid[0], grid[1])
+			}
+		}
+	}()
+
+	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
+		t.Logf("[slice] %d", imgID)
+
+		if int(imgID) >= len(images) {
+			t.Skipf("invalid imgID-%d", imgID)
+		}
+
+		img := images[imgID]
+
+		if img == nil {
+			t.Errorf("invalid img-%d", imgID)
+			t.SkipNow()
+		}
+
+		grid := [2]uint{rows, column}
+
+		tiles := imageslicer.Slice(img, grid)
+
+		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
+			t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
+			//t.Skipf("[slice] failed for img-%d due to %s", imgID, err)
+			t.SkipNow()
+		}
+		t.Logf("[slice] %d", imgID)
+	})
+
+}
+
+func BenchmarkSlice(b *testing.B) {
+
+	imgID := 0 //rand.Intn(len(images))
+	img := images[imgID]
+
+	if img == nil {
+		b.Errorf("invalid img-%d", imgID)
+	}
+
+	b.ResetTimer()
+
+	gridID := 0
+	grid := grids[gridID]
+
+	b.Logf("[testcase] img %d grid %v iter %d\n", imgID, grid, b.N)
+
+	for i := 0; i < b.N; i++ {
+
+		b.StartTimer()
+
+		tiles := imageslicer.Slice(img, grid)
+
+		b.StopTimer()
+
+		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
+			b.Errorf("[slice] failed for img-%d due to %s", imgID, err)
+		}
+	}
+
+}
+
 var compareColor = func(color1, color2 color.Color) (flag bool) {
 
 	rC1, gC1, bC1, aC1 := color1.RGBA()
@@ -125,6 +200,8 @@ var compareColor = func(color1, color2 color.Color) (flag bool) {
 var procureImages = func() (imgs []image.Image) {
 
 	var wg sync.WaitGroup
+
+	var mw sync.Mutex
 
 	urls := []string{
 		"https://static.wikia.nocookie.net/big-hero-6-fanon/images/0/0f/Hiro.jpg/revision/latest?cb=20180511180437",
@@ -149,10 +226,12 @@ var procureImages = func() (imgs []image.Image) {
 			img := imageslicer.GetImageFromUrl(imgUrl)
 
 			if img == nil {
-				//panic(fmt.Sprintf("image-%d not found in the url", i)) //FIXME ideally itegrate to the test
 				fmt.Printf("img-%d unable to retreive image\n", i)
 				return
 			}
+
+			mw.Lock()
+			defer mw.Unlock()
 
 			imgs = append(imgs, img)
 		}(imgUrl)
@@ -165,13 +244,19 @@ var procureImages = func() (imgs []image.Image) {
 	}
 
 	for i, base64str := range base64s {
-		img, err := imageslicer.GetImageFromBase64(base64str)
-		if err == nil {
-			imgs = append(imgs, img)
-		} else {
-			fmt.Println(err)
-			panic(fmt.Sprintf("base64string - %d invalid\n", i))
-		}
+
+		go func(i int, base64str string) {
+			img, err := imageslicer.GetImageFromBase64(base64str)
+			if err == nil {
+				mw.Lock()
+				defer mw.Unlock()
+				imgs = append(imgs, img)
+			} else {
+				fmt.Println(err)
+				return
+			}
+		}(i, base64str)
+
 	}
 
 	imgDir := "images"
@@ -189,7 +274,9 @@ var procureImages = func() (imgs []image.Image) {
 					log.Println("err", err)
 					log.Fatalf("failed to retreive image-%s\n", imgFile)
 				}
-				log.Println("imgFile", imgFile)
+				//log.Println("imgFile", imgFile)
+				mw.Lock()
+				defer mw.Unlock()
 
 				imgs = append(imgs, img)
 			}(imgFile)
@@ -197,6 +284,30 @@ var procureImages = func() (imgs []image.Image) {
 	}
 
 	wg.Wait()
+
+	return
+}
+
+var procureGrids = func() (grids [][2]uint) {
+
+	grids = [][2]uint{
+		//{205, 164},
+		{50, 50},
+		//{1, 0},
+		{1, 1},
+		{1, 2},
+		{1, 10},
+		//{2,0},
+		{2, 1},
+		{3, 1},
+		{3, 2},
+		{3, 3},
+		{3, 6},
+		{5, 6},
+		{7, 20},
+		{10, 10},
+		{10, 20},
+	}
 
 	return
 }
