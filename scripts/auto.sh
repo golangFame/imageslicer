@@ -1,12 +1,10 @@
-#!/bin/bash
+#! /bin/bash
 
-git checkout main
-
-echo "pulling"
-
-git pull
-
-go work sync
+#git checkout main
+#
+#echo "pulling"
+#
+#git pull
 
 git describe --tags
 
@@ -23,6 +21,8 @@ chmod +x scripts/tag.sh
 
 ./scripts/release.sh
 ./scripts/tag.sh
+
+go work sync
 
 git add .
 git commit -m "final deps-$tag"
