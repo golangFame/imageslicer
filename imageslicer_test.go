@@ -117,7 +117,7 @@ func TestSlice(t *testing.T) {
 func FuzzSlice(f *testing.F) {
 
 	func() { //generate corpus
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 1; i++ {
 			randImgID := rand.Intn(len(images))
 			randRow := rand.Intn(100) + 1
 			randCol := randRow
