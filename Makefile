@@ -31,12 +31,16 @@ run-examples:
 
 TAG := v0.8-alpha.1
 
-tag:
-	TAG=$(TAG) ./scripts/tag.sh
+#tag:
+#	TAG=$(TAG) ./scripts/tag.sh
+#
+#release:
+#	TAG=$(TAG) ./scripts/release.sh
+#
+#deploy:
+#	make release
+#	make tag
+#
 
 release:
-	TAG=$(TAG) ./scripts/release.sh
-
-deploy:
-	make release
-	make tag
+	sh scripts/auto.sh
