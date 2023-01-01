@@ -16,6 +16,8 @@ import (
 type unitTest struct {
 }
 
+var images = procureImages()
+
 func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
@@ -99,7 +101,7 @@ IMAGE:
 
 func TestSlice(t *testing.T) {
 
-	images := procureImages()
+	//images := procureImages()
 	imgID := rand.Intn(len(images))
 	img := images[imgID]
 
@@ -123,7 +125,6 @@ func TestSlice(t *testing.T) {
 
 func BenchmarkSlice(b *testing.B) {
 
-	images := procureImages()
 	imgID := rand.Intn(len(images))
 	img := images[imgID]
 
