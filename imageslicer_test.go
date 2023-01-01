@@ -144,8 +144,8 @@ func FuzzSlice(f *testing.F) {
 		tiles := imageslicer.Slice(img, grid)
 
 		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
-			//t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
-			t.Skipf("[slice] failed for img-%d due to %s", imgID, err)
+			t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
+			//t.Skipf("[slice] failed for img-%d due to %s", imgID, err)
 			t.SkipNow()
 		}
 		t.Logf("[slice] %d", imgID)
