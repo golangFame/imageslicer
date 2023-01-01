@@ -170,14 +170,22 @@ func BenchmarkSlice(b *testing.B) {
 	gridID := rand.Intn(len(grids))
 	grid := grids[gridID]
 
-	b.StartTimer()
+	b.Logf("[img] %d", imgID)
+	b.Logf("grid %v\n", grid)
 
-	tiles := imageslicer.Slice(img, grid)
+	for i := 0; i < b.N; i++ {
 
-	expectedNoOfTiles := int(grid[0] * grid[1])
+		b.StartTimer()
 
-	if len(tiles) != expectedNoOfTiles {
-		b.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+		tiles := imageslicer.Slice(img, grid)
+
+		b.StopTimer()
+
+		expectedNoOfTiles := int(grid[0] * grid[1])
+
+		if len(tiles) != expectedNoOfTiles {
+			b.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+		}
 	}
 
 }
