@@ -59,7 +59,7 @@ git branch -u origin/release/${TAG}
 git add -u
 git commit -m "chore: release $TAG"
 git tag ${TAG}
-git push origin ${TAG}
+#git push origin ${TAG}
 
 for dir in $PACKAGE_DIRS
 do
