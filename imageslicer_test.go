@@ -127,7 +127,7 @@ func TestSlice(t *testing.T) {
 
 func FuzzSlice(f *testing.F) {
 
-	f.Fuzz(func(t *testing.T, imgID uint8) {
+	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
 		t.Logf("[slice] %d", imgID)
 
 		if int(imgID) >= len(images) {
@@ -144,7 +144,7 @@ func FuzzSlice(f *testing.F) {
 
 		grids := procureGrids()
 		gridID := rand.Intn(len(grids))
-		grid := grids[gridID]
+		grid := [2]uint{rows, column}
 
 		tiles := imageslicer.Slice(img, grid)
 
