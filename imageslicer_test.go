@@ -209,6 +209,8 @@ var procureImages = func() (imgs []image.Image) {
 
 	var wg sync.WaitGroup
 
+	var mw sync.Mutex
+
 	urls := []string{
 		"https://static.wikia.nocookie.net/big-hero-6-fanon/images/0/0f/Hiro.jpg/revision/latest?cb=20180511180437",
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwOJvQSpkphlKYMPTPgvuKiLOQuccmeoP-GQ&usqp=CAU",
@@ -237,6 +239,9 @@ var procureImages = func() (imgs []image.Image) {
 				return
 			}
 
+			mw.Lock()
+			defer mw.Unlock()
+
 			imgs = append(imgs, img)
 		}(imgUrl)
 	}
@@ -248,13 +253,19 @@ var procureImages = func() (imgs []image.Image) {
 	}
 
 	for i, base64str := range base64s {
-		img, err := imageslicer.GetImageFromBase64(base64str)
-		if err == nil {
-			imgs = append(imgs, img)
-		} else {
-			fmt.Println(err)
-			panic(fmt.Sprintf("base64string - %d invalid\n", i))
-		}
+
+		go func(i int, base64str string) {
+			img, err := imageslicer.GetImageFromBase64(base64str)
+			if err == nil {
+				mw.Lock()
+				defer mw.Unlock()
+				imgs = append(imgs, img)
+			} else {
+				fmt.Println(err)
+				return
+			}
+		}(i, base64str)
+
 	}
 
 	imgDir := "images"
@@ -273,6 +284,8 @@ var procureImages = func() (imgs []image.Image) {
 					log.Fatalf("failed to retreive image-%s\n", imgFile)
 				}
 				//log.Println("imgFile", imgFile)
+				mw.Lock()
+				defer mw.Unlock()
 
 				imgs = append(imgs, img)
 			}(imgFile)
