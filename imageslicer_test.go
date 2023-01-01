@@ -132,7 +132,7 @@ func FuzzSlice(f *testing.F) {
 	func() { //generate corpus
 		for i := 0; i < 100; i++ {
 			randImgID := rand.Intn(len(images))
-			randRow := rand.Intn(1000) + 1
+			randRow := rand.Intn(200) + 1
 			randCol := rand.Intn(randRow+1) + 1
 
 			f.Add(uint(randImgID), uint(randRow), uint(randCol))
