@@ -26,3 +26,12 @@ jobs:
 
     - name: Test
       run: go test -v ./... -race
+
+    - name: Race
+      run: go test -v ./... -race
+
+    - name: Fuzz
+      run: go test -fuzz
+
+    - name: Benchmark
+      run: go test -bench='.*' -count 1000
