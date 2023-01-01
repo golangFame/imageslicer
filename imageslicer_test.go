@@ -13,6 +13,9 @@ import (
 	"time"
 )
 
+type unitTest struct {
+}
+
 func TestSlicesJoins(t *testing.T) {
 
 	images := procureImages()
@@ -30,22 +33,7 @@ IMAGE:
 
 	t.Logf("[TEST] image %v ", img.Bounds())
 
-	grids := [][2]uint{
-		//{1, 0},
-		{1, 1},
-		{1, 2},
-		{1, 10},
-		//{2,0},
-		{2, 1},
-		{3, 1},
-		{3, 2},
-		{3, 3},
-		{3, 6},
-		{5, 6},
-		{7, 20},
-		{10, 10},
-		{10, 20},
-	}
+	grids := procureGrids()
 
 	for _, grid := range grids {
 		tiles := imageslicer.Slice(img, grid)
@@ -106,6 +94,30 @@ IMAGE:
 	}
 
 	goto IMAGE
+
+}
+
+func TestSlice(t *testing.T) {
+
+	images := procureImages()
+	imgID := rand.Intn(len(images))
+	img := images[imgID]
+
+	if img == nil {
+		t.Errorf("invalid img-%d", imgID)
+	}
+
+	grids := procureGrids()
+	gridID := rand.Intn(len(grids))
+	grid := grids[gridID]
+
+	tiles := imageslicer.Slice(img, grid)
+
+	expectedNoOfTiles := int(grid[0] * grid[1])
+
+	if len(tiles) != expectedNoOfTiles {
+		t.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+	}
 
 }
 
@@ -198,6 +210,27 @@ var procureImages = func() (imgs []image.Image) {
 
 	wg.Wait()
 
+	return
+}
+
+var procureGrids = func() (grids [][2]uint) {
+
+	grids = [][2]uint{
+		//{1, 0},
+		{1, 1},
+		{1, 2},
+		{1, 10},
+		//{2,0},
+		{2, 1},
+		{3, 1},
+		{3, 2},
+		{3, 3},
+		{3, 6},
+		{5, 6},
+		{7, 20},
+		{10, 10},
+		{10, 20},
+	}
 	return
 }
 
