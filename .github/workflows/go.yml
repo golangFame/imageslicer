@@ -42,13 +42,10 @@ jobs:
     - name: Race
       run: go test -v ./... -race
 
-    - name: Fuzz
-      run: go test -fuzz
 
 
   benchmark:
     runs-on: ubuntu-latest
-    #    needs: [ build ]
 
     steps:
       - uses: actions/checkout@v3
@@ -60,4 +57,18 @@ jobs:
 
       - name: Benchmark
         run: go test -bench='.*' -count 21292
+
+  fuzz:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.4
+
+      - name: Fuzz
+        run: go test -fuzz
 
