@@ -159,18 +159,20 @@ func FuzzSlice(f *testing.F) {
 
 func BenchmarkSlice(b *testing.B) {
 
-	imgID := rand.Intn(len(images))
+	imgID := 0 //rand.Intn(len(images))
 	img := images[imgID]
 
 	if img == nil {
 		b.Errorf("invalid img-%d", imgID)
 	}
 
+	b.ResetTimer()
+
 	grids := procureGrids()
 	gridID := rand.Intn(len(grids))
 	grid := grids[gridID]
 
-	b.Logf("[testcase] img %d grid %v\n", imgID, grid)
+	b.Logf("[testcase] img %d grid %v iter %d\n", imgID, grid, b.N)
 
 	for i := 0; i < b.N; i++ {
 
