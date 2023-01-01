@@ -107,13 +107,13 @@ func TestSlice(t *testing.T) {
 
 	//images := procureImages()
 	imgID := rand.Intn(len(images))
+	imgID = 0
 	img := images[imgID]
 
 	if img == nil {
 		t.Errorf("invalid img-%d", imgID)
 	}
 
-	grids := procureGrids()
 	gridID := rand.Intn(len(grids))
 	gridID = 0
 	grid := grids[gridID]
@@ -305,6 +305,7 @@ var procureImages = func() (imgs []image.Image) {
 var procureGrids = func() (grids [][2]uint) {
 
 	grids = [][2]uint{
+		{205, 164},
 		{50, 50},
 		//{1, 0},
 		{1, 1},
@@ -321,6 +322,7 @@ var procureGrids = func() (grids [][2]uint) {
 		{10, 10},
 		{10, 20},
 	}
+
 	return
 }
 

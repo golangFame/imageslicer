@@ -194,8 +194,9 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 func CheckSlice(tiles []image.Image, grid [2]uint) (err error) {
 	expectedNoOfTiles := int(grid[0] * grid[1])
 
-	if len(tiles) < expectedNoOfTiles {
+	if len(tiles) < expectedNoOfTiles { //I am using ceil
 		err = fmt.Errorf("expected-%d got-%d", expectedNoOfTiles, len(tiles))
+		return
 	}
 	return
 }
