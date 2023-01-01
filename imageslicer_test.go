@@ -127,7 +127,17 @@ func TestSlice(t *testing.T) {
 
 func FuzzSlice(f *testing.F) {
 
-	f.Fuzz(func(t *testing.T, imgID uint8, rows uint, column uint) {
+	func() { //generate corpus
+		for i := 0; i < 100; i++ {
+			randImgID := rand.Intn(len(images))
+			randRow := rand.Intn(1000) + 1
+			randCol := rand.Intn(1000) + 1
+
+			f.Add(uint(randImgID), uint(randRow), uint(randCol))
+		}
+	}()
+
+	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
 		t.Logf("[slice] %d", imgID)
 
 		if int(imgID) >= len(images) {
@@ -142,8 +152,6 @@ func FuzzSlice(f *testing.F) {
 			t.SkipNow()
 		}
 
-		grids := procureGrids()
-		gridID := rand.Intn(len(grids))
 		grid := [2]uint{rows, column}
 
 		tiles := imageslicer.Slice(img, grid)
@@ -151,7 +159,7 @@ func FuzzSlice(f *testing.F) {
 		expectedNoOfTiles := int(grid[0] * grid[1])
 
 		if len(tiles) != expectedNoOfTiles {
-			t.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+			t.Errorf("[slice] failed for img-%d,grid-%v", imgID, grid)
 			t.SkipNow()
 		}
 		t.Logf("[slice] %d", imgID)
