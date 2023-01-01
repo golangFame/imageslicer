@@ -6,3 +6,4 @@ github.com/goferHiro/image-slicer v1.0.2/go.mod h1:e7duyDiKjGSYYVvN7o7XI809Yf4ia
 github.com/goferHiro/image-slicer v1.0.3-alpha/go.mod h1:chz/EyWKysru8PA2MyxIW7nNjo/8emxEPLk362uucJU=
 github.com/goferHiro/image-slicer v1.0.3/go.mod h1:J8KkfZ6dc/xDU0AqYYtptQq/ohlcKfXEEtG0lABdKw4=
 github.com/goferHiro/image-slicer v1.1.1/go.mod h1:J8KkfZ6dc/xDU0AqYYtptQq/ohlcKfXEEtG0lABdKw4=
+github.com/goferHiro/image-slicer v1.1.1/go.mod h1:J8KkfZ6dc/xDU0AqYYtptQq/ohlcKfXEEtG0lABdKw4=

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-git checkout main
-
-echo "pulling"
-
-git pull
+#git checkout main
+#
+#echo "pulling"
+#
+#git pull
 
 git describe --tags
 
@@ -27,8 +27,8 @@ go work sync
 git add .
 git commit -m "final deps-$tag"
 
-git push
-git push origin --tags
+#git push
+#git push origin --tags
 
 echo "check the latest version, sleeping for 1 min for the go registry to sync up"
 
