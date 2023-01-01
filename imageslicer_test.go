@@ -123,6 +123,36 @@ func TestSlice(t *testing.T) {
 
 }
 
+func FuzzSlice(f *testing.F) {
+
+	f.Fuzz(func(t *testing.T, imgID int) {
+		//imgID := rand.Intn(len(images))
+		if imgID >= len(images) {
+			f.Skipf("invalid imgID-%d", imgID)
+			//f.SkipNow()
+		}
+
+		img := images[imgID]
+
+		if img == nil {
+			t.Errorf("invalid img-%d", imgID)
+		}
+
+		grids := procureGrids()
+		gridID := rand.Intn(len(grids))
+		grid := grids[gridID]
+
+		tiles := imageslicer.Slice(img, grid)
+
+		expectedNoOfTiles := int(grid[0] * grid[1])
+
+		if len(tiles) != expectedNoOfTiles {
+			t.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+		}
+	})
+
+}
+
 func BenchmarkSlice(b *testing.B) {
 
 	imgID := rand.Intn(len(images))
