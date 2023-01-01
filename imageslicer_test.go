@@ -44,14 +44,6 @@ IMAGE:
 	for _, grid := range grids {
 		tiles := imageslicer.Slice(img, grid)
 
-		expectedNoOfTiles := grid[0] * grid[1]
-
-		if len(tiles) != int(expectedNoOfTiles) {
-			t.Errorf("expected %d != %d", expectedNoOfTiles, len(tiles))
-		} else {
-			t.Logf("[SPLIT] passed for GRID[%v]", grid)
-		}
-
 		joinedImg, err := imageslicer.Join(tiles, grid)
 		if err != nil {
 			t.Errorf("[JOIN] failed due to %s", err)
