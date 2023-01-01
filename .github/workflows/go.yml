@@ -81,7 +81,7 @@ jobs:
           go-version: 1.19.4
 
       - name: Benchmark
-        run: go test -v -bench='.*' -count 2000
+        run: go test -v -bench=. -run=^Benchmark -count 20123
 
   fuzz:
     runs-on: ubuntu-latest
