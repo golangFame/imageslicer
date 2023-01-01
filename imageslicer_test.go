@@ -51,7 +51,7 @@ IMAGE:
 		} else {
 			shapeJ := joinedImg.Bounds()
 			shapeI := img.Bounds()
-			t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
+			//t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
 
 			if shapeI != shapeJ {
 				t.Log("[JOIN] pixels lost while splitting")
