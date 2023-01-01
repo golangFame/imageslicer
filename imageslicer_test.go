@@ -159,7 +159,7 @@ func FuzzSlice(f *testing.F) {
 		expectedNoOfTiles := int(grid[0] * grid[1])
 
 		if len(tiles) != expectedNoOfTiles {
-			t.Errorf("[slice] failed for img-%d,grid-%v", imgID, grid)
+			t.Errorf("[slice] img-%d,grid-%v tiles-%d", imgID, grid, len(tiles))
 			t.SkipNow()
 		}
 		t.Logf("[slice] %d", imgID)
