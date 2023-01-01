@@ -26,7 +26,6 @@ jobs:
 
     - name: Examples
       run: |
-        echo "Inside group"
         PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
         | sort)
         echo $PACKAGE_DIRS
