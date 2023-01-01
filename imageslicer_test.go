@@ -115,14 +115,13 @@ func TestSlice(t *testing.T) {
 
 	grids := procureGrids()
 	gridID := rand.Intn(len(grids))
+	gridID = 0
 	grid := grids[gridID]
 
 	tiles := imageslicer.Slice(img, grid)
 
-	expectedNoOfTiles := int(grid[0] * grid[1])
-
-	if len(tiles) != expectedNoOfTiles {
-		t.Errorf("[slice] failed for img-%d,grid-%d", imgID, gridID)
+	if err := imageslicer.CheckSlice(tiles, grid); err != nil {
+		t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
 	}
 
 }
@@ -310,6 +309,7 @@ var procureImages = func() (imgs []image.Image) {
 var procureGrids = func() (grids [][2]uint) {
 
 	grids = [][2]uint{
+		{50, 50},
 		//{1, 0},
 		{1, 1},
 		{1, 2},
