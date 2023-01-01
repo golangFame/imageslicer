@@ -43,4 +43,5 @@ TAG := v0.8-alpha.1
 #
 
 release:
-	sh scripts/auto.sh
+	chmod +x scripts/auto.sh
+	./scripts/auto.sh
