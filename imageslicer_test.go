@@ -291,7 +291,7 @@ var procureImages = func() (imgs []image.Image) {
 var procureGrids = func() (grids [][2]uint) {
 
 	grids = [][2]uint{
-		{205, 164},
+		//{205, 164},
 		{50, 50},
 		//{1, 0},
 		{1, 1},
