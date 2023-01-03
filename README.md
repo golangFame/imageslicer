@@ -40,6 +40,30 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 
 </details>
 
+<details open>
+
+<summary>Grid [2*1] </summary>
+
+![hiro2x1J](https://user-images.githubusercontent.com/103487904/210327504-e49498e6-29f5-416f-9094-93d8b3a82d7d.png)
+
+</details>
+
+<details open>
+
+<summary>Grid [2*3] </summary>
+
+![hiro2x3J](https://user-images.githubusercontent.com/103487904/210327651-de61b269-12dd-467a-8d45-41cf45d081eb.png)
+
+</details>
+
+<details open>
+
+<summary>Grid [3*4] </summary>
+
+![hiro3x4](https://user-images.githubusercontent.com/103487904/210327940-b029bd1f-5f68-42c3-a4f9-dbf5447a554a.png)
+
+</details>
+
 ### Usecases 2: Join the tiles back together
 
 <details open>
@@ -63,6 +87,30 @@ This incident made me realize that I can build a 35x faster library in Go. Hence
 <summary>Grid [4*4] </summary>
 
 ![hiro4*4R](https://user-images.githubusercontent.com/103487904/209412186-83ffec0c-acef-4d3b-b1b2-5c06c101078b.png)
+
+</details>
+
+<details open>
+
+<summary>Grid [2*1] </summary>
+
+![hiro2x1R](https://user-images.githubusercontent.com/103487904/210328209-ebf6abb3-48c0-4275-9a32-0bd937115293.png)
+
+</details>
+
+<details open>
+
+<summary>Grid [2*3] </summary>
+
+![hiro2x3R](https://user-images.githubusercontent.com/103487904/210328258-c4ecb5ed-9a61-478a-8967-5773a3e9fc9f.png)
+
+</details>
+
+<details open>
+
+<summary>Grid [3*4] </summary>
+
+![hiro3x4R ](https://user-images.githubusercontent.com/103487904/210328307-07d8a489-b540-4bb1-8dd5-e871074ee1dc.png)
 
 </details>
 
