@@ -16,12 +16,14 @@ import (
 	"strings"
 )
 
-type Grid struct {
+/*type Grid struct {
 	Rows    int
 	Columns int
-}
+}*/
 
-func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
+type Grid [2]uint
+
+func Slice(img image.Image, grid Grid) (tiles []image.Image) {
 
 	tiles = make([]image.Image, 0, grid[0]*grid[1])
 
@@ -58,7 +60,7 @@ func Slice(img image.Image, grid [2]uint) (tiles []image.Image) {
 	return
 }
 
-func Join(tiles []image.Image, grid [2]uint) (img image.Image, err error) {
+func Join(tiles []image.Image, grid Grid) (img image.Image, err error) {
 
 	if err = CheckSlice(tiles, grid); err != nil {
 		return
@@ -191,7 +193,7 @@ func GetImageFromPath(imgPath string) (img image.Image, err error) {
 	return
 }
 
-func CheckSlice(tiles []image.Image, grid [2]uint) (err error) {
+func CheckSlice(tiles []image.Image, grid Grid) (err error) {
 	expectedNoOfTiles := int(grid[0] * grid[1])
 
 	if len(tiles) < expectedNoOfTiles { //I am using ceil

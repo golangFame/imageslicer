@@ -1,0 +1,62 @@
+name: Go [Cross]
+
+on:
+  push:
+    branches:
+      - '*'
+
+  pull_request:
+    branches:
+      - '*'
+
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  cross_platform:
+    strategy:
+      max-parallel: 3
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ] # multiple OS versions
+        go-version: [ '1.18.x', '1.19.x', '1.20.x' ] # multiple Go versions
+
+    runs-on: ${{ matrix.os }}
+    concurrency: 9
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod/cache
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+
+      - name: Test Intensive Retry
+        uses: nick-fields/retry@v2
+        with:
+          max_attempts: 3
+          retry_on: error
+          timeout_minutes: 60m
+          #working-directory: ${{ github.workspace }}
+          command: |
+            echo 'go test'
+            echo $pwd
+            
+            go test -v -run=^Test ./... -timeout 60m
+
+
+#      - name: Test Intensive Cross Platform
+#        run: go test -v -run=^Test ./... -timeout 360m
+
+
+#    https://github.com/marketplace/actions/retry-step

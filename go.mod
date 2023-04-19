@@ -3,10 +3,9 @@ module github.com/goferHiro/image-slicer
 go 1.19
 
 retract (
+	v1.3.0-alpha
 	v1.2.2 //dep issues for eg
 	v1.2.1 //dep issues for examples
-	v1.3.0-alpha
-
 
 	v1.2.0 //dep issues for examples
 	v1.0.1-beta //cannot find package issue

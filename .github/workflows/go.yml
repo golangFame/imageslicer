@@ -5,21 +5,42 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ,"**"]
+    branches:
+      - '*'
+
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - '*'
+
+  schedule:
+    - cron: '*/5 * * * *'
 
 jobs:
 
   build:
+    strategy:
+      max-parallel: 3
+      fail-fast: false
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
+
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod/cache
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
 
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.19.4
+
+    - name: Install dependencies
+      run: go get .
 
     - name: Build
       run: go build -v ./...
@@ -39,62 +60,114 @@ jobs:
         #
         #          (cd ./${dir} && go get -u && go mod tidy) # -compat=1.19
                 done
+
   test:
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test
+        run: go test -v -run="^Test" -short ./... -timeout 360m
+
+  test-intensive:
+    runs-on: ubuntu-latest
+    needs: [ build,test ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test
+        run: go test -v -run="^Test" ./... -timeout 360m
+
+  race:
+    runs-on: ubuntu-latest
+    needs: [ build,test ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Race Short
+        run: go test ./... -v -race -run "^Test" -short -timeout 360m
+
+  race-intensive:
+    runs-on: ubuntu-latest
+    needs: [ build,race ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Race
+        run: go test -v -race -run="^Test" ./... -timeout 360m
+
+
+  race-everything-short:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Race Short Fuzz
+        run: go test -v -race -run="^Fuzz"  -short ./... -timeout 360m
+
+      - name: Race Bench
+        run: go test -v -race -run="^Benchmark" -short ./... -timeout 360m
+
+  race-intensive-fuzz:
+    runs-on: ubuntu-latest
+    needs: [ build, race ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Race Fuzz
+        run: go test ./... -v -race -run "^Fuzz"  -timeout 360m
+        continue-on-error: true
+
+  benchmark:
     runs-on: ubuntu-latest
     needs: [ build ]
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.19.4
-
-    - name: Test
-      run: go test -v -run=^Test ./...
-
-  race:
-    runs-on: ubuntu-latest
-
-    steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.4
-
-      - name: Race
-        run: go test -v -race -run=^Test ./...
-
-
-  benchmark:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.4
 
       - name: Benchmark
-        run: go test -v -race -benchmem -bench=. -run=^# -benchtime=100x  -count 200
+        run: go test -v -race -benchmem -bench=. -run="^#" -benchtime=100x  -count 200 -timeout 360m
 
   fuzz:
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.4
+      - name: Fuzz Short
+        run: go test -run="^Fuzz" -short -v -timeout 360m
+        continue-on-error: false
+
+  fuzz-intensive:
+    runs-on: ubuntu-latest
+    needs: [ build,fuzz ]
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Fuzz
-        run:  go test -v -fuzz  ^Fuzz -run ^$ -fuzztime=30s
+        run: go test -run="^Fuzz" -v -timeout 360m
+        continue-on-error: true
+
+      - name: Test Intensive Retry
+        uses: nick-fields/retry@v2
+        with:
+          max_attempts: 4
+          retry_on: error
+          timeout_minutes: 360m
+          #working-directory: ${{ github.workspace }}
+          command: |
+            go test -run="^Fuzz" -v -timeout 360m
+
+
+
 
 

@@ -35,14 +35,14 @@ func splitImage(w http.ResponseWriter, r *http.Request) {
 		c.WriteMessage(websocket.TextMessage, []byte("send the image url"))
 
 		mt, msg, err := c.ReadMessage()
-		grid := [2]uint{4, 4}
+		grid := imageslicer.Grid{4, 4}
 
 		var imageUrl string
 
 		var req struct {
-			Url    string  `json:"url"`
-			Grid   [2]uint `json:"grid"`
-			Border int     `json:"border"`
+			Url    string           `json:"url"`
+			Grid   imageslicer.Grid `json:"grid"`
+			Border int              `json:"border"`
 		}
 
 		switch mt {

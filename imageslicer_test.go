@@ -1,6 +1,7 @@
 package imageslicer_test
 
 import (
+	"context"
 	"fmt"
 	imageslicer "github.com/goferHiro/image-slicer"
 	"image"
@@ -13,103 +14,69 @@ import (
 	"time"
 )
 
-type unitTest struct {
-}
-
 var images = procureImages()
-
 var grids = procureGrids()
 
-var now = time.Now()
+var imgID int
+var img image.Image
 
-func TestSlicesJoins(t *testing.T) {
+var gridID int
+var grid [2]uint
 
-	images := procureImages()
+func init() {
+	rand.Seed(time.Now().UnixNano())
 
-	t.Logf("[TEST] images %d", len(images))
+	imgID = rand.Intn(len(images))
+	gridID = rand.Intn(len(grids))
 
-IMAGE:
-	if len(images) == 0 {
-		t.Logf("[TEST] no more images found")
-		return
-	}
-
-	img := images[0]
-	images = images[1:]
-
-	t.Logf("[TEST] image %v ", img.Bounds())
-
-	grids := procureGrids()
-
-	for _, grid := range grids {
-		tiles := imageslicer.Slice(img, grid)
-
-		joinedImg, err := imageslicer.Join(tiles, grid)
-		if err != nil {
-			t.Errorf("[JOIN] failed due to %s", err)
-			t.SkipNow()
-		} else {
-			shapeJ := joinedImg.Bounds()
-			shapeI := img.Bounds()
-			//t.Logf("[JOIN/SPLIT] %v [ORIG] %v", shapeJ.Max, shapeI.Max)
-
-			if shapeI != shapeJ {
-				t.Log("[JOIN] pixels lost while splitting")
-			}
-			rand.Seed(time.Now().UnixNano())
-
-			testCoordinates := [][2]int{
-				{shapeI.Min.X, shapeI.Min.Y},
-			}
-			maxY := shapeJ.Max.Y
-			minY := shapeJ.Min.Y
-
-			maxX := shapeJ.Max.X //ideally should be using origImg but that will fail for edge cases for certain imgs
-			minX := shapeJ.Min.X
-
-			for i := 0; i < (maxY + maxX); i++ { //TODO : should we test all coords
-				randY := rand.Intn(maxY-minY+1) + minY
-				randX := rand.Intn(maxX-minX+1) + minX
-
-				testCoordinates = append(testCoordinates, [2]int{randX, randY})
-			}
-
-			for _, coord := range testCoordinates {
-				x := coord[0]
-				y := coord[1]
-
-				colorI := img.At(x, y)
-				colorJ := joinedImg.At(x, y)
-
-				if compareColor(colorI, colorJ) {
-					//t.Logf("coord %v", coord)
-				} else {
-					t.Errorf("failed coord %v", coord)
-				}
-			}
-
-		}
-
-	}
-
-	goto IMAGE
+	img = images[imgID]
+	grid = grids[gridID]
 
 }
 
 func TestSlice(t *testing.T) {
 
-	imgID := rand.Intn(len(images))
-	imgID = 0 //TODO temp
-	img := images[imgID]
+	t.Parallel() //FIXME might cause race cuz of the global vars
 
-	gridID := rand.Intn(len(grids))
-	gridID = 0 //TODO temp
-	grid := grids[gridID]
+	if testing.Short() {
+		t.Logf("TESTSLICES-%d_[%v]", imgID, grid)
+		testSlice(t, img, grid)
+		return
+	}
+
+	for i, _ := range images {
+		for g, _ := range grids {
+			t.Run(fmt.Sprintf("TESTSLICES-%d_[%v]", i, grid), func(t *testing.T) {
+				t.Parallel()
+				testSlice(t, images[i], grids[g])
+			})
+		}
+		break //FIXME : remove when done
+	}
+
+}
+
+func testSlice(t *testing.T, img image.Image, grid [2]uint) {
 
 	tiles := imageslicer.Slice(img, grid)
 
+	expectedNoOfTiles := grid[0] * grid[1]
+
+	if expectedNoOfTiles == 0 {
+		if len(tiles) > 0 {
+			t.Errorf("[testSlice] expected 0 tiles got %d", len(tiles))
+		}
+		return
+	}
+
 	if err := imageslicer.CheckSlice(tiles, grid); err != nil {
-		t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
+		t.Errorf("[testSlice] failed for img-%d due to %s", imgID, err)
+		return
+	}
+
+	if err := validateSlices(t, img, tiles, grid); err != nil {
+		t.Errorf("[testSlice] %v", err)
+		return
 	}
 
 }
@@ -117,46 +84,51 @@ func TestSlice(t *testing.T) {
 func FuzzSlice(f *testing.F) {
 
 	func() { //generate corpus
-		for i := 0; i < 1; i++ {
-			randImgID := rand.Intn(len(images))
-			for _, grid := range grids {
-				f.Add(uint(randImgID), grid[0], grid[1])
+
+		seed := time.Now().UnixNano()
+		rand.Seed(seed)
+
+		f.Logf("[seed] %v", seed)
+
+		for i := 0; i < 500; i++ { //TODO add more
+			imgID := rand.Intn(len(images))
+			randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
+
+			f.Add(uint(imgID), randNo, randNo)
+
+			if testing.Short() {
+				break //short circuiting
 			}
+
 		}
 	}()
 
 	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
-		t.Logf("[slice] %d", imgID)
 
-		if int(imgID) >= len(images) {
-			t.Skipf("invalid imgID-%d", imgID)
-		}
+		t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
 
-		img := images[imgID]
+			if int(imgID) >= len(images) {
+				t.Skipf("invalid imgID-%d", imgID)
+			}
 
-		if img == nil {
-			t.Errorf("invalid img-%d", imgID)
-			t.SkipNow()
-		}
+			img := images[imgID]
 
-		grid := [2]uint{rows, column}
+			if img == nil {
+				t.Logf("invalid imgID-%d", imgID)
+				t.Errorf("invalid img-%d", imgID)
+				t.SkipNow()
+			}
 
-		tiles := imageslicer.Slice(img, grid)
+			grid := imageslicer.Grid{rows, column}
 
-		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
-			t.Errorf("[slice] failed for img-%d due to %s", imgID, err)
-			//t.Skipf("[slice] failed for img-%d due to %s", imgID, err)
-			t.SkipNow()
-		}
-		t.Logf("[slice] %d", imgID)
+			testSlice(t, img, grid)
+		})
+
 	})
 
 }
 
 func BenchmarkSlice(b *testing.B) {
-
-	imgID := 0 //rand.Intn(len(images))
-	img := images[imgID]
 
 	if img == nil {
 		b.Errorf("invalid img-%d", imgID)
@@ -167,19 +139,15 @@ func BenchmarkSlice(b *testing.B) {
 	gridID := 0
 	grid := grids[gridID]
 
-	b.Logf("[testcase] img %d grid %v iter %d\n", imgID, grid, b.N)
+	b.Logf("[bTestCase] img %d grid %v iter %d\n", imgID, grid, b.N)
 
 	for i := 0; i < b.N; i++ {
 
 		b.StartTimer()
 
-		tiles := imageslicer.Slice(img, grid)
+		imageslicer.Slice(img, grid)
 
 		b.StopTimer()
-
-		if err := imageslicer.CheckSlice(tiles, grid); err != nil {
-			b.Errorf("[slice] failed for img-%d due to %s", imgID, err)
-		}
 	}
 
 }
@@ -201,7 +169,7 @@ var procureImages = func() (imgs []image.Image) {
 
 	var wg sync.WaitGroup
 
-	var mw sync.Mutex
+	var mw sync.Mutex //TODO Add test case names for images
 
 	urls := []string{
 		"https://static.wikia.nocookie.net/big-hero-6-fanon/images/0/0f/Hiro.jpg/revision/latest?cb=20180511180437",
@@ -249,8 +217,8 @@ var procureImages = func() (imgs []image.Image) {
 			img, err := imageslicer.GetImageFromBase64(base64str)
 			if err == nil {
 				mw.Lock()
-				defer mw.Unlock()
 				imgs = append(imgs, img)
+				mw.Unlock()
 			} else {
 				fmt.Println(err)
 				return
@@ -274,11 +242,11 @@ var procureImages = func() (imgs []image.Image) {
 					log.Println("err", err)
 					log.Fatalf("failed to retreive image-%s\n", imgFile)
 				}
-				//log.Println("imgFile", imgFile)
+				//t.Logf("imgFile", imgFile)
 				mw.Lock()
-				defer mw.Unlock()
-
 				imgs = append(imgs, img)
+				mw.Unlock()
+
 			}(imgFile)
 		}
 	}
@@ -288,25 +256,30 @@ var procureImages = func() (imgs []image.Image) {
 	return
 }
 
-var procureGrids = func() (grids [][2]uint) {
+var procureGrids = func() (grids []imageslicer.Grid) {
 
-	grids = [][2]uint{
-		//{205, 164},
-		{50, 50},
+	grids = []imageslicer.Grid{
+		//{0, 0},
 		//{1, 0},
 		{1, 1},
 		{1, 2},
-		{1, 10},
-		//{2,0},
+		{1, 3},
+		{1, 4},
+		//{2, 0},
 		{2, 1},
+		{2, 2},
+		{2, 3},
+		{2, 4},
+		//{3, 0},
 		{3, 1},
 		{3, 2},
 		{3, 3},
-		{3, 6},
-		{5, 6},
-		{7, 20},
-		{10, 10},
-		{10, 20},
+		{3, 4},
+		//{4, 0},
+		{4, 1},
+		{4, 2},
+		{4, 3},
+		{4, 4},
 	}
 
 	return
@@ -329,6 +302,152 @@ func lsDir(dirPath string) (files []string, err error) {
 			files = append(files, path_)
 		}
 	}
+
+	return
+}
+
+// validate all the slices with
+func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid imageslicer.Grid) (err error) {
+
+	joinedImg, err := imageslicer.Join(tiles, grid)
+
+	if err != nil {
+		return fmt.Errorf("[ValidateSlice] %s", err)
+	}
+
+	var compareCoords = func(coord [2]int) (err error) {
+		x := coord[0]
+		y := coord[1]
+
+		colorI := srcImg.At(x, y)
+		colorJ := joinedImg.At(x, y)
+
+		if compareColor(colorI, colorJ) {
+		} else {
+			err = fmt.Errorf("[compareColor] (x,y)-(%v,%v)", x, y)
+			return
+		}
+		return
+	}
+
+	coords := make(chan [2]int, 10)
+
+	shapeI := srcImg.Bounds()
+	shapeJ := joinedImg.Bounds()
+
+	if shapeI != shapeJ {
+		t.Log("[SHAPE] pixels lost after split")
+	}
+
+	var produceCoords = func() {
+
+		maxY := shapeJ.Max.Y
+		minY := shapeI.Min.Y
+
+		maxX := shapeJ.Max.X
+		minX := shapeI.Min.X
+
+		t.Logf("[produceCoord] start")
+		defer t.Logf("[produceCoord] ended")
+
+		defer close(coords)
+
+		if testing.Short() {
+			rand.Seed(time.Now().UnixNano())
+
+			for i := 0; i < 5000; i++ {
+
+				if err != nil {
+					return
+				}
+
+				x := rand.Intn(maxY-minY+1) + minY
+				y := rand.Intn(maxX-minX+1) + minX
+				coord := [2]int{x, y}
+
+				coords <- coord
+
+			}
+		} else {
+			for x := minX; x < maxX; x++ {
+				for y := 0; y < maxY; y++ {
+
+					if err != nil {
+						return
+					}
+
+					coord := [2]int{x, y}
+
+					coords <- coord
+
+				}
+			}
+		}
+	}
+
+	var consumeCoords = func() {
+		var wg sync.WaitGroup
+		//errChan := make(chan error)
+		var errMutex sync.Mutex
+
+		errCtx, cancel := context.WithTimeout(context.Background(), time.Hour*6) //FIXME don't context timeout
+
+		t.Logf("[consumeCord] started")
+
+		var noOfCoordsTested int
+
+		for coord := range coords {
+
+			noOfCoordsTested += 1
+
+			wg.Add(1)
+			go func(coord [2]int) {
+				defer wg.Done()
+
+				select {
+				case <-errCtx.Done():
+					//don't compare
+					t.Logf("[consumeCord] ended prematurely")
+					return
+				default:
+					err1 := compareCoords(coord)
+					if err1 != nil {
+
+						if errMutex.TryLock() {
+							errMutex.Lock()
+							cancel()
+							err = err1
+						} else {
+							t.Logf("[consumeCord] err raised already")
+						}
+
+						//errMutex.Unlock()
+					}
+				}
+			}(coord)
+		}
+
+		wg.Wait()
+
+		log.Printf("[consumeCord] tested %d", noOfCoordsTested)
+
+		/*	close(errChan)
+
+			for err1 := range errChan {
+				err = err1 //combine errors
+				//break
+			}
+		*/
+	}
+
+	/*
+		testCoords := make(chan [2]int,1)
+
+		testCoords <- [2]int{shapeI.Min.X, shapeI.Min.Y}*/
+
+	go produceCoords()
+
+	consumeCoords()
 
 	return
 }
