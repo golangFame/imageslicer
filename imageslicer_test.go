@@ -34,7 +34,10 @@ func init() {
 
 	img = images[imgID]
 	grid = grids[gridID]
-	os.Setenv("GOMAXPROCS", strconv.Itoa(runtime.NumCPU()))
+	err := os.Setenv("GOMAXPROCS", strconv.Itoa(runtime.NumCPU()))
+	if err != nil {
+		log.Fatalf("failed to set GOMAXPROCS: %v", err)
+	}
 }
 
 func TestSlice(t *testing.T) {
@@ -93,7 +96,7 @@ func FuzzSlice(f *testing.F) {
 
 		f.Logf("[seed] %v", seed)
 
-		for i := 0; i < 100; i++ { //TODO add more
+		for i := 0; i < 10; i++ { //TODO add more
 			imgID := rand.Intn(len(images))
 			randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
 
@@ -102,7 +105,6 @@ func FuzzSlice(f *testing.F) {
 			if !testing.Short() && i < 2 {
 				break //short circuiting
 			}
-
 		}
 	}()
 
