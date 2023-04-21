@@ -115,53 +115,31 @@ func FuzzSlice(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
 
-		t.Logf("[%d,%d] %d", rows, column, imgID)
+		t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
 
-		if int(imgID) >= len(images) {
-			t.Logf("invalid imgID-%d", imgID)
-			t.SkipNow()
-		}
+			imgID, rows, column := imgID, rows, column
 
-		img := images[imgID]
+			t.Parallel()
 
-		if img == nil {
-			t.Logf("invalid imgID-%d", imgID)
-			//t.Errorf("invalid img-%d", imgID)
-			t.SkipNow()
-		}
+			t.Logf("[%d,%d] %d", rows, column, imgID)
 
-		grid := imageslicer.Grid{rows, column}
+			if int(imgID) >= len(images) {
+				t.Skipf("invalid imgID-%d", imgID)
+				//t.SkipNow()
+			}
 
-		testSlice(t, img, grid)
+			img := images[imgID]
 
-		//t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
-		//
-		//	imgID, rows, column := imgID, rows, column
-		//
-		//	//t.Parallel()
-		//
-		//	t.Logf("[%d,%d] %d", rows, column, imgID)
-		//
-		//	if int(imgID) >= len(images) {
-		//		t.Skipf("invalid imgID-%d", imgID)
-		//	}
-		//
-		//	img := images[imgID]
-		//
-		//	if img == nil {
-		//		t.Logf("invalid imgID-%d", imgID)
-		//		//t.Errorf("invalid img-%d", imgID)
-		//		t.SkipNow()
-		//	}
-		//
-		//	grid := imageslicer.Grid{rows, column}
-		//
-		//	testSlice(t, img, grid)
-		//
-		//	t.Cleanup(func() {
-		//		// delete the img id
-		//	})
-		//})
+			if img == nil {
+				t.Logf("invalid imgID-%d", imgID)
+				//t.Errorf("invalid img-%d", imgID)
+				t.SkipNow()
+			}
+
+			grid := imageslicer.Grid{rows, column}
+
+			testSlice(t, img, grid)
+		})
 
 	})
 

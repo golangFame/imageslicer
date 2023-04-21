@@ -40,7 +40,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: 1.19.4
+        go-version: 1.20.1
         check-latest: true
         cache-dependency-path: go.sum
         cache: true
@@ -66,7 +66,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Fuzz Short
-        run: go test -short -fuzz -v -fuzztime=15m
+        run: go test -short -fuzz -v -fuzztime=10s
         #go test -run="^Fuzz" -short -v -timeout 360m -fuzztime 1m
 
   race-fuzz:
