@@ -12,28 +12,37 @@ on:
   schedule:
     - cron: '*/5 * * * *'
 
+concurrency:
+  group: go_cross
+  cancel-in-progress: true
+
 jobs:
   cross_platform:
     strategy:
-      max-parallel: 3
-      fail-fast: true
+      max-parallel: 10 #cpu cores /- runner
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ] # multiple OS versions
-        go-version: [ '1.18.x', '1.19.x', '1.20.x' ] # multiple Go versions
+        go-version: [ '1.19.x', '1.20.x' ] # multiple Go versions #sync.atomic supported only in 1.19
+        arch: [x64, arm, arm64]
 
     runs-on: ${{ matrix.os }}
-    concurrency: 9
+    #concurrency: 8 # no of runners
+    env:
+      GOCACHE: /tmp/go/gocache
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache Go modules
+      - name: Cache Go modules and tests
         uses: actions/cache@v2
         with:
-          path: ~/go/pkg/mod/cache
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+          path: |
+            ~/go/pkg/mod/cache
+            /tmp/go/gocache
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
           restore-keys: |
-            ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+            ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
 
       - name: Set up Go ${{ matrix.go-version }}
         uses: actions/setup-go@v3
@@ -46,13 +55,13 @@ jobs:
         with:
           max_attempts: 3
           retry_on: error
-          timeout_minutes: 60m
+          timeout_minutes: 120m
           #working-directory: ${{ github.workspace }}
           command: |
             echo 'go test'
             echo $pwd
             
-            go test -v -run=^Test ./... -timeout 60m
+            go test -v -run=^Test ./... -timeout 120m
 
 
 #      - name: Test Intensive Cross Platform

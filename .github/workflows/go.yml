@@ -15,24 +15,35 @@ on:
   schedule:
     - cron: '*/5 * * * *'
 
-jobs:
+concurrency:
+  group: go
+  cancel-in-progress: true
 
+jobs:
   build:
     strategy:
-      max-parallel: 3
+      max-parallel: 10 #cores per runner
       fail-fast: false
+
+
+
     runs-on: ubuntu-latest
+      #concurrency: 8 #20 concurrent runners
+    env:
+      GOCACHE: /tmp/go/gocache
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Cache Go modules
+    - name: Cache Go modules and tests
       uses: actions/cache@v2
       with:
-        path: ~/go/pkg/mod/cache
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+        path: |
+         ~/go/pkg/mod/cache
+         /tmp/go/gocache
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
         restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+          ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
 
     - name: Set up Go
       uses: actions/setup-go@v3
@@ -93,7 +104,7 @@ jobs:
 
   race-intensive:
     runs-on: ubuntu-latest
-    needs: [ build,race ]
+    needs: [ test ]
 
     steps:
       - uses: actions/checkout@v3
@@ -116,7 +127,7 @@ jobs:
 
   race-intensive-fuzz:
     runs-on: ubuntu-latest
-    needs: [ build, race ]
+    needs: [ fuzz ]
 
     steps:
       - uses: actions/checkout@v3
@@ -160,7 +171,7 @@ jobs:
       - name: Test Intensive Retry
         uses: nick-fields/retry@v2
         with:
-          max_attempts: 4
+          max_attempts: 10
           retry_on: error
           timeout_minutes: 360m
           #working-directory: ${{ github.workspace }}

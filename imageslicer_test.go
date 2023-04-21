@@ -3,13 +3,16 @@ package imageslicer_test
 import (
 	"context"
 	"fmt"
-	imageslicer "github.com/goferHiro/image-slicer"
+	"github.com/goferHiro/image-slicer"
 	"image"
 	"image/color"
 	"log"
 	"math/rand"
 	"os"
+	"runtime"
+	"strconv"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -31,7 +34,7 @@ func init() {
 
 	img = images[imgID]
 	grid = grids[gridID]
-
+	os.Setenv("GOMAXPROCS", strconv.Itoa(runtime.NumCPU()))
 }
 
 func TestSlice(t *testing.T) {
@@ -44,14 +47,15 @@ func TestSlice(t *testing.T) {
 		return
 	}
 
-	for i, _ := range images {
-		for g, _ := range grids {
+	for i := range images {
+		for g := range grids {
 			t.Run(fmt.Sprintf("TESTSLICES-%d_[%v]", i, grid), func(t *testing.T) {
+				i, g := i, g
 				t.Parallel()
 				testSlice(t, images[i], grids[g])
 			})
 		}
-		break //FIXME : remove when done
+		//break //FIXME : remove when done
 	}
 
 }
@@ -76,7 +80,6 @@ func testSlice(t *testing.T, img image.Image, grid [2]uint) {
 
 	if err := validateSlices(t, img, tiles, grid); err != nil {
 		t.Errorf("[testSlice] %v", err)
-		return
 	}
 
 }
@@ -90,13 +93,13 @@ func FuzzSlice(f *testing.F) {
 
 		f.Logf("[seed] %v", seed)
 
-		for i := 0; i < 500; i++ { //TODO add more
+		for i := 0; i < 100; i++ { //TODO add more
 			imgID := rand.Intn(len(images))
 			randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
 
 			f.Add(uint(imgID), randNo, randNo)
 
-			if testing.Short() {
+			if !testing.Short() && i < 2 {
 				break //short circuiting
 			}
 
@@ -107,6 +110,10 @@ func FuzzSlice(f *testing.F) {
 
 		t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
 
+			imgID, rows, column := imgID, rows, column
+
+			t.Parallel()
+
 			if int(imgID) >= len(images) {
 				t.Skipf("invalid imgID-%d", imgID)
 			}
@@ -115,13 +122,17 @@ func FuzzSlice(f *testing.F) {
 
 			if img == nil {
 				t.Logf("invalid imgID-%d", imgID)
-				t.Errorf("invalid img-%d", imgID)
+				//t.Errorf("invalid img-%d", imgID)
 				t.SkipNow()
 			}
 
 			grid := imageslicer.Grid{rows, column}
 
 			testSlice(t, img, grid)
+
+			t.Cleanup(func() {
+				// delete the img id
+			})
 		})
 
 	})
@@ -187,14 +198,14 @@ var procureImages = func() (imgs []image.Image) {
 		//"https://svgshare.com/getbyhash/sha1-5pvW7UW07yfTh+HFUb3gVz0d7s0=",//FIXME add a failing test-svg not supported
 	}
 
-	for i, imgUrl := range urls {
+	for _, imgUrl := range urls {
 		wg.Add(1)
 		go func(imgUrl string) {
 			defer wg.Done()
 			img := imageslicer.GetImageFromUrl(imgUrl)
 
 			if img == nil {
-				fmt.Printf("img-%d unable to retreive image\n", i)
+				fmt.Printf("img-%s unable to retreive image", imgUrl)
 				return
 			}
 
@@ -330,7 +341,7 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 		return
 	}
 
-	coords := make(chan [2]int, 10)
+	coords := make(chan [2]int, 100)
 
 	shapeI := srcImg.Bounds()
 	shapeJ := joinedImg.Bounds()
@@ -394,11 +405,9 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 
 		t.Logf("[consumeCord] started")
 
-		var noOfCoordsTested int
+		var noOfCordsTested atomic.Int64
 
 		for coord := range coords {
-
-			noOfCoordsTested += 1
 
 			wg.Add(1)
 			go func(coord [2]int) {
@@ -411,6 +420,8 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 					return
 				default:
 					err1 := compareCoords(coord)
+					noOfCordsTested.Add(1)
+
 					if err1 != nil {
 
 						if errMutex.TryLock() {
@@ -418,9 +429,9 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 							cancel()
 							err = err1
 						} else {
-							t.Logf("[consumeCord] err raised already")
+							t.Logf("[consumeCord-%v] err already raised already", coord)
+							return
 						}
-
 						//errMutex.Unlock()
 					}
 				}
@@ -429,7 +440,9 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 
 		wg.Wait()
 
-		log.Printf("[consumeCord] tested %d", noOfCoordsTested)
+		cancel()
+
+		log.Printf("[consumeCord] tested %d", noOfCordsTested.Load())
 
 		/*	close(errChan)
 

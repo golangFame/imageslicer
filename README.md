@@ -3,8 +3,8 @@ Split images into tiles.
 
 Perform advanced image processing in Go - slice images into tiles, combine the tiles.
 
-[![Go](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml)
-[![Cross Platform](https://github.com/goferHiro/image-slicer/actions/workflows/go_cross.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go_cross.yml)
+[![Go 1.19+](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go.yml?branch=main)
+[![Cross Platform](https://github.com/goferHiro/image-slicer/actions/workflows/go_cross.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go_cross.yml?branch=main)
 [![Go.Dev](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/goferHiro/image-slicer?tab=doc)
 
 ## Idea and Inspiration
