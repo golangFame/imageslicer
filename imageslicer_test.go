@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/goferHiro/image-slicer"
+	"github.com/google/gofuzz"
 	"image"
 	"image/color"
 	"log"
@@ -101,7 +102,10 @@ func FuzzSlice(f *testing.F) {
 			//randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
 
 			//f.Add(uint(imgID), randNo, randNo)
-			f.Add(uint(i), uint(i), uint(i))
+			fuzzer := fuzz.New()
+			var fuzzInt uint16
+			fuzzer.Fuzz(&fuzzInt)
+			f.Add(uint(fuzzInt), uint(fuzzInt), uint(fuzzInt))
 
 			//if !testing.Short() && i < 2 {
 			//	break //short circuiting
@@ -111,32 +115,53 @@ func FuzzSlice(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
 
-		t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
+		t.Logf("[%d,%d] %d", rows, column, imgID)
 
-			imgID, rows, column := imgID, rows, column
+		if int(imgID) >= len(images) {
+			t.Logf("invalid imgID-%d", imgID)
+			t.SkipNow()
+		}
 
-			t.Parallel()
+		img := images[imgID]
 
-			if int(imgID) >= len(images) {
-				t.Skipf("invalid imgID-%d", imgID)
-			}
+		if img == nil {
+			t.Logf("invalid imgID-%d", imgID)
+			//t.Errorf("invalid img-%d", imgID)
+			t.SkipNow()
+		}
 
-			img := images[imgID]
+		grid := imageslicer.Grid{rows, column}
 
-			if img == nil {
-				t.Logf("invalid imgID-%d", imgID)
-				//t.Errorf("invalid img-%d", imgID)
-				t.SkipNow()
-			}
+		testSlice(t, img, grid)
 
-			grid := imageslicer.Grid{rows, column}
-
-			testSlice(t, img, grid)
-
-			t.Cleanup(func() {
-				// delete the img id
-			})
-		})
+		//t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
+		//
+		//	imgID, rows, column := imgID, rows, column
+		//
+		//	//t.Parallel()
+		//
+		//	t.Logf("[%d,%d] %d", rows, column, imgID)
+		//
+		//	if int(imgID) >= len(images) {
+		//		t.Skipf("invalid imgID-%d", imgID)
+		//	}
+		//
+		//	img := images[imgID]
+		//
+		//	if img == nil {
+		//		t.Logf("invalid imgID-%d", imgID)
+		//		//t.Errorf("invalid img-%d", imgID)
+		//		t.SkipNow()
+		//	}
+		//
+		//	grid := imageslicer.Grid{rows, column}
+		//
+		//	testSlice(t, img, grid)
+		//
+		//	t.Cleanup(func() {
+		//		// delete the img id
+		//	})
+		//})
 
 	})
 
@@ -472,3 +497,6 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 
 	return
 }
+
+//https://go.dev/security/fuzz/
+//https://go.dev/doc/tutorial/fuzz

@@ -17,3 +17,5 @@ retract (
 	v0.8.1-alpha.1
 
 )
+
+require github.com/google/gofuzz v1.2.0

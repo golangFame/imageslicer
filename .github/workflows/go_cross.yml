@@ -24,6 +24,7 @@ jobs:
       matrix:
         go-version: [ '1.19.x', '1.20.x' ] # multiple Go versions #sync.atomic supported only in 1.19
         arch: [ x64, arm, arm64 ]
+        os: [windows-latest,macos-latest, ubuntu-latest]
 
         include:
           - os: ubuntu-latest
@@ -46,21 +47,23 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
-        env:
-          GOCACHE=${{matrix.os.gocache}}
-        run:
-          echo GOCACHE:${{matrix.os.gocache}}
+          cache: true
+          go-version-file: go.mod
+
+#        env:
+#          GOCACHE: ${{matrix.os.gocache}}
+#        run: #cannot have both run and use
+#          echo GOCACHE:${{matrix.os.gocache}}
           #go env -w GOCACHE= ${{matrix.os.gocache}}
 
-      - name: Cache Go modules and tests
+      - name: Cache Go tests
         uses: actions/cache@v2
         with:
           path: |
-            ~/go/pkg/mod/cache
             $(go env GOCACHE)
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
           restore-keys: |
-            ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
+            ${{ runner.os }}-${{ matrix.arch }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
 
       - name: Install dependencies
         run: go get .
