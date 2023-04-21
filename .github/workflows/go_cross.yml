@@ -1,4 +1,4 @@
-name: Go [Cross]
+name: Go [Ubuntu,Mac,Win]
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - '*'
 
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/40 * * * *'
 
 concurrency:
   group: go_cross
@@ -22,32 +22,45 @@ jobs:
       max-parallel: 3 #cpu cores /- runner
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ] # multiple OS versions
         go-version: [ '1.19.x', '1.20.x' ] # multiple Go versions #sync.atomic supported only in 1.19
-        arch: [x64, arm, arm64]
+        arch: [ x64, arm, arm64 ]
 
+        include:
+          - os: ubuntu-latest
+            gocache: /tmp/go/gocache
+          - os: windows-latest
+            gocache: C:/gocache
+          - os: macos-latest
+            gocache: /tmp/go/gocache
+
+#
     runs-on: ${{ matrix.os }}
     #concurrency: 8 # no of runners
-    env:
-      GOCACHE: /tmp/go/gocache
+#    env:
+#      GOCACHE: $HOME/gocache # $pwd/go/gocache # Has to be absolute path
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set up Go ${{ matrix.go-version }} ${{runner.os}}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+        env:
+          GOCACHE=${{matrix.os.gocache}}
+        run:
+          echo GOCACHE:${{matrix.os.gocache}}
+          #go env -w GOCACHE= ${{matrix.os.gocache}}
 
       - name: Cache Go modules and tests
         uses: actions/cache@v2
         with:
           path: |
             ~/go/pkg/mod/cache
-            /tmp/go/gocache
+            $(go env GOCACHE)
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
           restore-keys: |
             ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
-
-      - name: Set up Go ${{ matrix.go-version }} ${{runner.os}}
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ matrix.go-version }}
 
       - name: Install dependencies
         run: go get .

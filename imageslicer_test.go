@@ -97,14 +97,15 @@ func FuzzSlice(f *testing.F) {
 		f.Logf("[seed] %v", seed)
 
 		for i := 0; i < 10; i++ { //TODO add more
-			imgID := rand.Intn(len(images))
-			randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
+			//imgID := rand.Intn(len(images))
+			//randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
 
-			f.Add(uint(imgID), randNo, randNo)
+			//f.Add(uint(imgID), randNo, randNo)
+			f.Add(uint(i), uint(i), uint(i))
 
-			if !testing.Short() && i < 2 {
-				break //short circuiting
-			}
+			//if !testing.Short() && i < 2 {
+			//	break //short circuiting
+			//}
 		}
 	}()
 
@@ -438,6 +439,11 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 					}
 				}
 			}(coord)
+
+			if !testing.Short() {
+				time.Sleep(time.Millisecond) //to prevent overload
+			}
+
 		}
 
 		wg.Wait()

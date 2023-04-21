@@ -13,7 +13,7 @@ on:
       - '*'
 
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '* */1 * * *'
 
 concurrency:
   group: go_fuzz
