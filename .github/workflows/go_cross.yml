@@ -3,11 +3,11 @@ name: Go [Ubuntu,Mac,Win]
 on:
   push:
     branches:
-      - '*'
+      - 'main'
 
   pull_request:
     branches:
-      - '*'
+      - 'main'
 
   schedule:
     - cron: '*/40 * * * *'

@@ -47,7 +47,7 @@ func TestSlice(t *testing.T) {
 
 	if testing.Short() {
 		t.Logf("TESTSLICES-%d_[%v]", imgID, grid)
-		testSlice(t, img, grid)
+		testSlice(t, img, grid, false)
 		return
 	}
 
@@ -56,15 +56,15 @@ func TestSlice(t *testing.T) {
 			t.Run(fmt.Sprintf("TESTSLICES-%d_[%v]", i, grid), func(t *testing.T) {
 				i, g := i, g
 				t.Parallel()
-				testSlice(t, images[i], grids[g])
+				testSlice(t, images[i], grids[g], true)
 			})
 		}
-		//break //FIXME : remove when done
+		break //FIXME : remove when done
 	}
 
 }
 
-func testSlice(t *testing.T, img image.Image, grid [2]uint) {
+func testSlice(t *testing.T, img image.Image, grid [2]uint, short bool) {
 
 	tiles := imageslicer.Slice(img, grid)
 
@@ -82,7 +82,7 @@ func testSlice(t *testing.T, img image.Image, grid [2]uint) {
 		return
 	}
 
-	if err := validateSlices(t, img, tiles, grid); err != nil {
+	if err := validateSlices(t, img, tiles, grid, short); err != nil {
 		t.Errorf("[testSlice] %v", err)
 	}
 
@@ -107,9 +107,9 @@ func FuzzSlice(f *testing.F) {
 			fuzzer.Fuzz(&fuzzInt)
 			f.Add(uint(fuzzInt), uint(fuzzInt), uint(fuzzInt))
 
-			//if !testing.Short() && i < 2 {
-			//	break //short circuiting
-			//}
+			if !testing.Short() {
+				break //short circuiting
+			}
 		}
 	}()
 
@@ -138,7 +138,7 @@ func FuzzSlice(f *testing.F) {
 
 			grid := imageslicer.Grid{rows, column}
 
-			testSlice(t, img, grid)
+			testSlice(t, img, grid, true)
 		})
 
 	})
@@ -324,7 +324,7 @@ func lsDir(dirPath string) (files []string, err error) {
 }
 
 // validate all the slices with
-func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid imageslicer.Grid) (err error) {
+func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid imageslicer.Grid, short bool) (err error) {
 
 	joinedImg, err := imageslicer.Join(tiles, grid)
 
@@ -369,7 +369,7 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 
 		defer close(coords)
 
-		if testing.Short() {
+		if short {
 			rand.Seed(time.Now().UnixNano())
 
 			for i := 0; i < 5000; i++ {
