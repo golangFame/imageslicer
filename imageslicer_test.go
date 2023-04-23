@@ -59,7 +59,7 @@ func TestSlice(t *testing.T) {
 				testSlice(t, images[i], grids[g], true)
 			})
 		}
-		break //FIXME : remove when done
+		//break //FIXME : remove when done
 	}
 
 }
