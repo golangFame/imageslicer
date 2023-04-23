@@ -86,7 +86,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Test
-        run: go test -v -run="^Test" ./... -timeout 18m
+        run: go test -v -run="^Test" ./... -timeout 15m
 
   race:
     runs-on: ubuntu-latest
@@ -106,7 +106,7 @@ jobs:
 #      - uses: actions/checkout@v3
 #
 #      - name: Race
-#        run: go test -v -race -run="^Test" ./... -timeout 18m
+#        run: go test -v -race -run="^Test" ./... -timeout 15m
 
 
   race-bench:
@@ -116,7 +116,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Race Bench
-        run: go test -v -race -run="^Benchmark" -short ./... -timeout 18m
+        run: go test -v -race -run="^Benchmark" -short ./... -timeout 15m
 
   benchmark:
     runs-on: ubuntu-latest
@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Benchmark
-        run: go test -v -benchmem -bench=. -run="^#" -benchtime=100x  -count 1000 -timeout 18m
+        run: go test -v -benchmem -bench=. -run="^#" -benchtime=100x  -count 1000 -timeout 15m
 
 
 
