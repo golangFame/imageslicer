@@ -35,7 +35,7 @@ jobs:
           $(go env GOCACHE)
         key: ${{ runner.os }}-go-${{ hashFiles('imageslicer_test.go') }}
         restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
+          ${{ runner.os }}-go-${{ hashFiles('imageslicer_test.go') }}
 
     - name: Set up Go
       uses: actions/setup-go@v4

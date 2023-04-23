@@ -43,7 +43,7 @@ func init() {
 
 func TestSlice(t *testing.T) {
 
-	t.Parallel() //FIXME might cause race cuz of the global vars
+	//t.Parallel() //FIXME might cause race cuz of the global vars
 
 	if testing.Short() {
 		t.Logf("TESTSLICES-%d_[%v]", imgID, grid)

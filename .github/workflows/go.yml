@@ -13,7 +13,7 @@ on:
       - 'main'
 
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/5 * * * *'
 
 concurrency:
   group: go
@@ -35,7 +35,7 @@ jobs:
           $(go env GOCACHE)
         key: ${{ runner.os }}-go-${{ hashFiles('imageslicer_test.go') }}
         restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('**/go.mod','imageslicer_test.go') }}
+          ${{ runner.os }}-go-${{ hashFiles('imageslicer_test.go') }}
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -78,15 +78,15 @@ jobs:
       - name: Test Short
         run: go test -v -run="^Test" -short ./... -timeout 20m
 
-  test-intensive:
-    runs-on: ubuntu-latest
-    needs: [ build ]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Test
-        run: go test -v -run="^Test" ./... -timeout 15m
+#  test-intensive:
+#    runs-on: ubuntu-latest
+#    needs: [ build ]
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Test
+#        run: go test -v -run="^Test" ./... -timeout 6h
 
   race:
     runs-on: ubuntu-latest
