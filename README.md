@@ -11,7 +11,7 @@ Perform advanced image processing in Go - slice images into tiles, combine the t
 
 ## Idea and Inspiration
 
-I was tasked with building a puzzle game in Go. I struggled to find an article or a library that can accomplish image slicing. 
+I was tasked with building a puzzle game in Go. I struggled to find an article or a library that can accomplishes image slicing. 
 Eventually, I  had to settle down with python's [image-slicer](https://pypi.org/project/image-slicer), and build a microservice 
 [Game-Engine](https://github.com/pythoneerHiro/game-engine).
 
