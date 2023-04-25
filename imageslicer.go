@@ -202,3 +202,44 @@ func CheckSlice(tiles []image.Image, grid Grid) (err error) {
 	}
 	return
 }
+
+// by default img is saved as jpeg explicilty specify the format otherwise
+
+func Save(img image.Image, imgName string) (err error) {
+
+	imgType := path.Ext(imgName)
+	imgType = strings.TrimPrefix(imgType, ".")
+
+	if imgType == "" {
+		imgType = "jpeg"
+		imgName = fmt.Sprintf("%s.%s", imgName, imgType)
+	}
+
+	f1, err := os.Create(imgName)
+	if err != nil {
+		return fmt.Errorf("failed to create file: %v", err)
+	}
+	defer f1.Close()
+
+	switch imgType {
+	case "png":
+		if err = png.Encode(f1, img); err != nil {
+			err = fmt.Errorf("failed to encode: %v", err)
+		}
+
+	default:
+		if err = jpeg.Encode(f1, img, nil); err != nil {
+			err = fmt.Errorf("failed to encode: %v", err)
+		}
+	}
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func SaveTile(tile image.Image, tileName string) (err error) {
+	return Save(tile, tileName)
+}
