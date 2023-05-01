@@ -9,6 +9,9 @@ Perform advanced image processing in Go - slice images into tiles, combine the t
 [![Go Fuzz](https://github.com/goferHiro/image-slicer/actions/workflows/go_fuzz.yml/badge.svg?branch=main)](https://github.com/goferHiro/image-slicer/actions/workflows/go_fuzz.yml?branch=main)
 [![Go.Dev](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/goferHiro/image-slicer?tab=doc)
 
+
+[Checkout out the Tutorial](https://medium.com/@goferhiro/go-image-slicer-the-easy-way-to-slice-and-join-images-in-go-db26de93fc5e?source=friends_link&sk=0e43de85c7024ecfd0ea81cc4392bfea) 
+
 ## Idea and Inspiration
 
 I was tasked with building a puzzle game in Go. I struggled to find an article or a library that can accomplishes image slicing. 
