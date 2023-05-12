@@ -20,6 +20,8 @@ then
     help
 fi
 
+echo "TAGGING-$TAG"
+
 TAG_REGEX="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
 if ! [[ "${TAG}" =~ ${TAG_REGEX} ]]; then
     printf "TAG is not valid: ${TAG}\n\n"
