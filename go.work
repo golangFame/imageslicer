@@ -5,3 +5,7 @@ use .
 use examples/basic
 
 use examples/websocket-server
+
+replace (
+	github.com/goferHiro/image-slicer v1.3.0 => github.com/golangFame/imageslicer v1.3.0
+)
