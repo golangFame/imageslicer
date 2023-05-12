@@ -20,6 +20,8 @@ then
     help
 fi
 
+echo "TAGGING-$TAG"
+
 TAG_REGEX="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
 if ! [[ "${TAG}" =~ ${TAG_REGEX} ]]; then
     printf "TAG is not valid: ${TAG}\n\n"
@@ -45,13 +47,15 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
 
 for dir in $PACKAGE_DIRS
 do
-    sed --in-place \
-      "s/golangFame\/image-slicer\([^ ]*\) v.*/golangFame\/image-slicer\1 ${TAG}/" "${dir}/go.mod"
+    sed \
+      "s/golangFame\/imageslicer\([^ ]*\) v.*/golangFame\/imageslicer\1 ${TAG}/" "${dir}/go.mod" > "${dir}/go.mod.tmp"
+      mv "${dir}/go.mod.tmp" "${dir}/go.mod"
 done
 
 pwd
 
-sed --in-place "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go
+sed "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go > version.go.tmp
+mv version.go.tmp version.go
 
 git checkout -b release/${TAG}
 
