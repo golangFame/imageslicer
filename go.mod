@@ -6,8 +6,8 @@ retract v0.0.0-20221225000820-aabbc67a701f
 
 retract (
 	v1.4.0-beta-1
-	v1.4.0-alpha
 	v1.4.0-alpha-2
+	v1.4.0-alpha
 	v1.3.1-beta
 
 	v1.3.0-alpha
