@@ -47,9 +47,8 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
 
 for dir in $PACKAGE_DIRS
 do
-    sed \
-      "s/golangFame\/imageslicer\([^ ]*\) v.*/golangFame\/imageslicer\1 ${TAG}/" "${dir}/go.mod" > go.mod.tmp
-      mv go.mod.tmp go.mod
+    sed -i \
+      "s/golangFame\/imageslicer\([^ ]*\) v.*/golangFame\/imageslicer\1 ${TAG}/" "${dir}/go.mod"
 done
 
 pwd
