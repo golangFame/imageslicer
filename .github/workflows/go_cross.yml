@@ -12,6 +12,8 @@ on:
   schedule:
     - cron: '0 * */1 * *'
 
+  workflow_dispatch:
+
 concurrency:
   group: go_cross
   cancel-in-progress: true
