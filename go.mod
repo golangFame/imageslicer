@@ -1,9 +1,9 @@
-module github.com/golangFame/imageslicer
+module github.com/golangFame/imageslicer/examples/websocket-server
 
 go 1.19
 
 require (
-	github.com/golangFame/imageslicer v1.4.0-alpha
+	github.com/golangFame/imageslicer v1.4.0-alpha-2
 	github.com/gorilla/websocket v1.5.0
 )
 
