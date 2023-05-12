@@ -3,7 +3,7 @@ module github.com/golangFame/imageslicer/examples/websocket-server
 go 1.19
 
 require (
-	github.com/golangFame/imageslicer v1.3.0
+	github.com/golangFame/imageslicer v1.4.0-beta-1
 	github.com/gorilla/websocket v1.5.0
 )
 
