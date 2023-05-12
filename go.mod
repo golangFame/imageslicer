@@ -1,4 +1,4 @@
-module github.com/golangFame/imageslicer/examples/websocket-server
+module github.com/golangFame/imageslicer
 
 go 1.19
 
