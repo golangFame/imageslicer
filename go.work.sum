@@ -8,3 +8,4 @@ github.com/golangFame/imageslicer v1.0.3/go.mod h1:J8KkfZ6dc/xDU0AqYYtptQq/ohlcK
 github.com/golangFame/imageslicer v1.1.1/go.mod h1:J8KkfZ6dc/xDU0AqYYtptQq/ohlcKfXEEtG0lABdKw4=
 github.com/golangFame/imageslicer v1.3.0-alpha/go.mod h1:QqelWh8rtBvLwb8ro1SSnu4uov8nGGPTwikh/ZqgyXY=
 github.com/golangFame/imageslicer v1.3.0-beta.1/go.mod h1:QqelWh8rtBvLwb8ro1SSnu4uov8nGGPTwikh/ZqgyXY=
+github.com/golangFame/imageslicer v1.4.0-beta-1/go.mod h1:+lom28JH7sGZ2yAJPHNoKhF71o+Sn0MKG7Nvrw6lnCE=
