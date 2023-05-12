@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/goferHiro/image-slicer"
+	"github.com/golangFame/imageslicer"
 	"log"
 	"os"
 )

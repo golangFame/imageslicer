@@ -21,7 +21,7 @@ mod:
 
 fmt:
 	gofmt -w -s ./
-	goimports -w  -local github.com/goferHiro/image-slicer ./
+	goimports -w  -local github.com/golangFame/imageslicer ./
 
 run-examples:
 	set -e; for dir in $(EXAMPLE_GO_MOD_DIRS); do \

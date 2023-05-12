@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/goferHiro/image-slicer"
+	"github.com/golangFame/imageslicer"
 	"github.com/gorilla/websocket"
 	"image"
 	"image/color"

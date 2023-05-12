@@ -3,7 +3,7 @@ package imageslicer_test
 import (
 	"context"
 	"fmt"
-	"github.com/goferHiro/image-slicer"
+	"github.com/golangFame/imageslicer"
 	"github.com/google/gofuzz"
 	"image"
 	"image/color"

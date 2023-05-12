@@ -6,7 +6,7 @@
 * From image-slicer
 
 ```shell
-  git clone github.com/goferHiro/image-slicer
+  git clone github.com/golangFame/imageslicer
   cd image-slicer
   cd examples/websocket-server
   go run .
@@ -14,7 +14,7 @@
 * Go run
 
 ```shell
-go run github.com/goferHiro/image-slicer/examples/websocket-server@latest
+go run github.com/golangFame/imageslicer/examples/websocket-server@latest
 ```
 
 

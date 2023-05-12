@@ -34,6 +34,6 @@ echo "check the latest version, sleeping for 1 min for the go registry to sync u
 
 sleep 1
 
-go list -m -json github.com/goferHiro/image-slicer/examples/basic@latest
-go list -m -json github.com/goferHiro/image-slicer/examples/websocket-server@latest
-go list -m -json github.com/goferHiro/image-slicer@latest
+go list -m -json github.com/golangFame/imageslicer/examples/basic@latest
+go list -m -json github.com/golangFame/imageslicer/examples/websocket-server@latest
+go list -m -json github.com/golangFame/imageslicer@latest
