@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/golangFame/imageslicer"
-	"github.com/google/gofuzz"
 	"image"
 	"image/color"
 	"log"
