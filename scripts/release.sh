@@ -47,13 +47,15 @@ PACKAGE_DIRS=$(find . -mindepth 2 -type f -name 'go.mod' -exec dirname {} \; \
 
 for dir in $PACKAGE_DIRS
 do
-    sed --in-place \
-      "s/golangFame\/imageslicer\([^ ]*\) v.*/golangFame\/imageslicer\1 ${TAG}/" "${dir}/go.mod"
+    sed \
+      "s/golangFame\/imageslicer\([^ ]*\) v.*/golangFame\/imageslicer\1 ${TAG}/" "${dir}/go.mod" > go.mod.tmp
+      mv go.mod.tmp go.mod
 done
 
 pwd
 
-sed --in-place "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go
+sed "s/\(return \)\"[^\"]*\"/\1\"${TAG#v}\"/" version.go > version.go.tmp
+mv version.go.tmp version.go
 
 git checkout -b release/${TAG}
 
