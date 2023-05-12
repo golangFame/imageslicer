@@ -30,6 +30,12 @@ git commit -m "final deps-$tag"
 git push
 git push origin --tags
 
+git checkout main
+
+#git branch -D release/${TAG}
+git branch -l "release*" | xargs git branch -D
+
+
 echo "check the latest version, sleeping for 1 min for the go registry to sync up"
 
 sleep 1
