@@ -1,21 +1,10 @@
-module github.com/golangFame/imageslicer
+module github.com/golangFame/imageslicer/examples/websocket-server
 
 go 1.19
 
-retract (
-	v1.3.0-alpha
-	v1.2.2 //dep issues for eg
-	v1.2.1 //dep issues for examples
-
-	v1.2.0 //dep issues for examples
-	v1.0.1-beta //cannot find package issue
-	v1.0.1-alpha
-
-	v1.0.0 //doesn't support examples due to replace
-	//unstable versions
-	v0.8.1-alpha.1
-	v0.8.1-alpha.1
-
+require (
+	github.com/golangFame/imageslicer v1.3.1-alpha
+	github.com/gorilla/websocket v1.5.0
 )
 
-require github.com/google/gofuzz v1.2.0
+retract v0.0.0-20221225000820-aabbc67a701f
