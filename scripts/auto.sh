@@ -43,3 +43,5 @@ sleep 1
 go list -m -json github.com/golangFame/imageslicer/examples/basic@latest
 go list -m -json github.com/golangFame/imageslicer/examples/websocket-server@latest
 go list -m -json github.com/golangFame/imageslicer@latest
+
+git checkout main
