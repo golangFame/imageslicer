@@ -91,35 +91,27 @@ func testSlice(t *testing.T, img image.Image, grid [2]uint, short bool) {
 func FuzzSlice(f *testing.F) {
 
 	func() { //generate corpus
-
 		seed := time.Now().UnixNano()
 		rand.Seed(seed)
 
 		f.Logf("[seed] %v", seed)
 
-		for i := 0; i < 10; i++ { //TODO add more
+		for i := 0; i < 20; i++ { //TODO add more
 			//imgID := rand.Intn(len(images))
 			//randNo := uint(rand.Intn(500)) + 5 //TODO consider using non squara grids to test the strength
-
 			//f.Add(uint(imgID), randNo, randNo)
 			fuzzer := fuzz.New()
 			var fuzzInt uint16
 			fuzzer.Fuzz(&fuzzInt)
 			f.Add(uint(fuzzInt), uint(fuzzInt), uint(fuzzInt))
-
-			if !testing.Short() {
-				break //short circuiting
-			}
 		}
 	}()
 
-	f.Fuzz(func(t *testing.T, imgID uint, rows uint, column uint) {
+	f.Fuzz(func(t *testing.T, imgID, rows, column uint) {
 
 		t.Run(fmt.Sprintf("[%d,%d] %d", rows, column, imgID), func(t *testing.T) {
 
 			imgID, rows, column := imgID, rows, column
-
-			t.Parallel()
 
 			t.Logf("[%d,%d] %d", rows, column, imgID)
 
@@ -352,7 +344,7 @@ func validateSlices(t *testing.T, srcImg image.Image, tiles []image.Image, grid 
 	shapeI := srcImg.Bounds()
 	shapeJ := joinedImg.Bounds()
 
-	if shapeI != shapeJ {
+	if !shapeI.Eq(shapeJ) {
 		t.Log("[SHAPE] pixels lost after split")
 	}
 
