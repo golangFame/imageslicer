@@ -30,15 +30,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Cache Go tests
-      uses: actions/cache@v2
-      with:
-        path: |
-          $(go env GOCACHE)
-        key: ${{ runner.os }}-go-${{ hashFiles('*.go') }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('(*.go') }}
-
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
