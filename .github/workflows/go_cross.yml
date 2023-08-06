@@ -59,7 +59,7 @@ jobs:
           #go env -w GOCACHE= ${{matrix.os.gocache}}
 
       - name: Cache Go tests
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             $(go env GOCACHE)
