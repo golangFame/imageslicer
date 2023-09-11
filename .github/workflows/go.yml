@@ -28,7 +28,7 @@ jobs:
       GOCACHE: /tmp/go/gocache
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -66,7 +66,7 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Test Short
         run: go test -v -run="^Test" -short ./... -timeout 20m
@@ -76,7 +76,7 @@ jobs:
 #    needs: [ build ]
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #
 #      - name: Test
 #        run: go test -v -run="^Test" ./... -timeout 6h
@@ -86,7 +86,7 @@ jobs:
     needs: [ build ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Race Short
         run: go test ./... -v -race -run "^Test" -short -timeout 20m
@@ -96,7 +96,7 @@ jobs:
 #    needs: [ test ]
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #
 #      - name: Race
 #        run: go test -v -race -run="^Test" ./... -timeout 15m
@@ -107,7 +107,7 @@ jobs:
     needs: [ build ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Benchmark
         run: go test -v -benchmem -bench=. -run="^#" -benchtime=100x -race -count 1000 -timeout 15m

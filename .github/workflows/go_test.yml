@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
 
     - name: Set up Go
@@ -49,7 +49,7 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Test Short
         run: go test -v -run="^Test" -short ./... -timeout 20m
@@ -59,7 +59,7 @@ jobs:
     needs: [ test ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Test
         run: go test -v -run="^Test" ./... -timeout 6h
