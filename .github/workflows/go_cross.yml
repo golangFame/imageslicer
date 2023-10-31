@@ -43,7 +43,7 @@ jobs:
 #      GOCACHE: $HOME/gocache # $pwd/go/gocache # Has to be absolute path
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Go ${{ matrix.go-version }} ${{runner.os}}
         uses: actions/setup-go@v3
